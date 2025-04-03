@@ -6,9 +6,12 @@
     "node": "20 || 22"
   },
   "scripts": {
+    "preinstall": "node -e \"if(![20,22].includes(parseInt(process.versions.node))) {console.log('\\x1b[31mERROR: Unsupported Node.js version. Please use Node.js 20 or 22\\x1b[0m'); process.exit(1)}\"",
     "dev": "yarn workspaces foreach -A --include backend --include app --parallel --jobs unlimited -v -i run start",
+    "dev:env": "yarn workspaces foreach -A --include backend --include app --parallel --jobs unlimited -v -i run start:env",
     "start": "yarn workspace app start",
     "start-backend": "yarn workspace backend start",
+    "start-backend:env": "node -r dotenv/config node_modules/.bin/backstage-cli package start",
     "build:backend": "yarn workspace backend build",
     "build:all": "backstage-cli repo build --all",
     "build-image": "yarn workspace backend build-image",
@@ -22,7 +25,8 @@
     "lint": "backstage-cli repo lint --since origin/master",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
-    "new": "backstage-cli new"
+    "new": "backstage-cli new",
+    "check-env": "node scripts/check-env.js"
   },
   "workspaces": {
     "packages": [

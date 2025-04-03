@@ -64,7 +64,17 @@ techdocs:
 
 auth:
   # see https://backstage.io/docs/auth/ to learn about auth providers
+  environment: development
   providers:
+    github:
+      development:
+        clientId: ${AUTH_GITHUB_CLIENT_ID}
+        clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+        # Explicitly set the callback URL to match what's in your GitHub OAuth app
+        callbackUrl: http://localhost:7007/api/auth/github/handler/frame
+        signIn:
+          resolvers:
+            - resolver: usernameMatchingUserEntityName
     # See https://backstage.io/docs/auth/guest/provider
     guest: {}
 
@@ -94,6 +104,12 @@ catalog:
       rules:
         - allow: [User, Group]
 
+    # Add the users file with GitHub identities
+    - type: file
+      target: ../../examples/users.yaml
+      rules:
+        - allow: [User]
+
     ## Uncomment these lines to add more example data
     # - type: url
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml
@@ -103,6 +119,7 @@ catalog:
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme-corp.yaml
     #   rules:
     #     - allow: [User, Group]
+
   # Experimental: Always use the search method in UrlReaderProcessor.
   # New adopters are encouraged to enable it as this behavior will be the default in a future release.
   useUrlReadersSearch: true
@@ -110,7 +127,6 @@ catalog:
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
 
-# see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:
   # setting this to `false` will disable permissions
   enabled: true

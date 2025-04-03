@@ -1,0 +1,22 @@
+# This file contains user entities that match GitHub identities
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: guest
+  annotations:
+    backstage.io/edit-url: https://github.com/settings/profile
+spec:
+  memberOf: [guests]
+---
+# You should edit this to match your actual GitHub username
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: github-user
+  annotations:
+    # Replace YOUR_GITHUB_USERNAME with your actual GitHub username
+    github.com/user-login: YOUR_GITHUB_USERNAME
+    backstage.io/edit-url: https://github.com/settings/profile
+spec:
+  memberOf: [guests]

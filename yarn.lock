@@ -14529,6 +14529,7 @@ __metadata:
     "@backstage/plugin-techdocs-backend": "npm:^2.0.0"
     app: "link:../app"
     better-sqlite3: "npm:^9.0.0"
+    dotenv: "npm:^16.4.5"
     node-gyp: "npm:^10.0.0"
     pg: "npm:^8.11.3"
   languageName: unknown
@@ -17316,6 +17317,13 @@ __metadata:
     no-case: "npm:^3.0.4"
     tslib: "npm:^2.0.3"
   checksum: 10c0/5b859ea65097a7ea870e2c91b5768b72ddf7fa947223fd29e167bcdff58fe731d941c48e47a38ec8aa8e43044c8fbd15cd8fa21689a526bc34b6548197cd5b05
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^16.4.5":
+  version: 16.4.7
+  resolution: "dotenv@npm:16.4.7"
+  checksum: 10c0/be9f597e36a8daf834452daa1f4cc30e5375a5968f98f46d89b16b983c567398a330580c88395069a77473943c06b877d1ca25b4afafcdd6d4adb549e8293462
   languageName: node
   linkType: hard
 

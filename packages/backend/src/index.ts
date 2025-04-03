@@ -7,8 +7,31 @@
  */
 
 import { createBackend } from '@backstage/backend-defaults';
+import { LoggerService } from '@backstage/backend-plugin-api';
+import * as path from 'path';
 
-const backend = createBackend();
+// Load environment variables from .env file
+require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') });
+
+// Create a backend instance with more explicit logging for auth
+const backend = createBackend({
+  services: [
+    {
+      service: LoggerService,
+      config: {
+        format: 'text',
+        baseOptions: {
+          level: process.env.LOG_LEVEL || 'debug',
+        },
+      },
+    },
+  ],
+});
+
+// Log environment variables at startup to help debug authentication issues
+console.log('Environment check:');
+console.log(`AUTH_GITHUB_CLIENT_ID exists: ${Boolean(process.env.AUTH_GITHUB_CLIENT_ID)}`);
+console.log(`AUTH_GITHUB_CLIENT_SECRET exists: ${Boolean(process.env.AUTH_GITHUB_CLIENT_SECRET)}`);
 
 backend.add(import('@backstage/plugin-app-backend'));
 backend.add(import('@backstage/plugin-proxy-backend'));
