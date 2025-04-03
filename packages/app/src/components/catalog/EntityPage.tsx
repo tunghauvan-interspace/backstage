@@ -59,6 +59,12 @@ import {
   isKubernetesAvailable,
 } from '@backstage/plugin-kubernetes';
 
+import {
+  isJenkinsAvailable,
+  EntityJenkinsContent,
+  EntityLatestJenkinsRunCard
+} from '@backstage/plugin-jenkins';
+
 const techdocsContent = (
   <EntityTechdocsContent>
     <TechDocsAddons>
@@ -136,6 +142,14 @@ const overviewContent = (
       <EntityCatalogGraphCard variant="gridItem" height={400} />
     </Grid>
 
+    <EntitySwitch>
+      <EntitySwitch.Case if={isJenkinsAvailable}>
+        <Grid item md={6}>
+          <EntityLatestJenkinsRunCard  branch=''/>
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
+
     <Grid item md={4} xs={12}>
       <EntityLinksCard />
     </Grid>
@@ -187,6 +201,20 @@ const serviceEntityPage = (
 
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/jenkins" title="Jenkins">
+      <EntitySwitch>
+        <EntitySwitch.Case if={isJenkinsAvailable}>
+          <EntityJenkinsContent />
+        </EntitySwitch.Case>
+        <EntitySwitch.Case>
+          <EmptyState
+            title="No Jenkins available for this entity"
+            description="You need to add a jenkins.io/job-full-name annotation to see Jenkins builds here."
+          />
+        </EntitySwitch.Case>
+      </EntitySwitch>
     </EntityLayout.Route>
   </EntityLayout>
 );

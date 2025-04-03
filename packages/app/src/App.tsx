@@ -37,6 +37,7 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+// import { jenkinsPlugin } from '@backstage/plugin-jenkins';
 
 const app = createApp({
   apis,
@@ -56,6 +57,7 @@ const app = createApp({
     bind(orgPlugin.externalRoutes, {
       catalogIndex: catalogPlugin.routes.catalogIndex,
     });
+    // Removing the incorrect Jenkins plugin binding
   },
   components: {
     SignInPage: props => (

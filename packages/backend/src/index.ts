@@ -56,11 +56,7 @@ backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
 // permission plugin
 backend.add(import('@backstage/plugin-permission-backend'));
-
-// We need to register the AdminPermissionPolicy with the permission backend
-// Since direct integration is challenging with the new backend system, we'll use
-// the module approach for now to ensure basic functionality
-// Temporarily use the default allow-all policy until we can properly integrate the custom policy
+// This is the module mentioned in the error message
 backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
 
 // search plugin
@@ -71,5 +67,8 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
 // kubernetes
 backend.add(import('@backstage/plugin-kubernetes-backend'));
+
+// Jenkins plugin
+backend.add(import('@backstage/plugin-jenkins-backend'));
 
 backend.start();

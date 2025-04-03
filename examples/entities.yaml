@@ -4,6 +4,11 @@ apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: examples
+  annotations:
+    backstage.io/owner: guests
+    backstage.io/managed-by-location: url:https://github.com/your-org/your-repo/catalog-info.yaml
+    # Update this to your actual Jenkins job path
+    jenkins.io/job-full-name: LoginCheck
 spec:
   owner: guests
 ---
@@ -12,6 +17,12 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: example-website
+  annotations:
+    backstage.io/owner: guests
+    backstage.io/techdocs-ref: url:https://github.com/your-org/your-repo/docs
+    backstage.io/source-location: url:https://github.com/your-org/your-repo
+    # Add Jenkins annotation to the component as well if needed
+    jenkins.io/job-full-name: "Indonesia ISTools Staging Deployment"
 spec:
   type: website
   lifecycle: experimental
@@ -24,6 +35,9 @@ apiVersion: backstage.io/v1alpha1
 kind: API
 metadata:
   name: example-grpc-api
+  annotations:
+    backstage.io/owner: guests
+    backstage.io/api-docs: url:https://example.com/openapi.yaml
 spec:
   type: grpc
   lifecycle: experimental

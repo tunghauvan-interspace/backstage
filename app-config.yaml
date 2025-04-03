@@ -94,7 +94,7 @@ catalog:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration
   rules:
-    - allow: [Component, System, API, Resource, Location]
+    - allow: [Component, System, API, Resource, Location, User, Group]
   locations:
     # Local example data, file locations are relative to the backend process, typically `packages/backend`
     - type: file
@@ -163,3 +163,13 @@ permission:
         effect: allow
         actions: ['catalog.entity.read']
         resources: ['catalog-entity']
+
+# Add this Jenkins integration configuration
+jenkins:
+  baseUrl: http://masterjenkins.asean-accesstrade.net
+  username: ${JENKINS_USERNAME}
+  apiKey: ${JENKINS_API_KEY}
+  # Optional: custom page title
+  pageTitle: My Jenkins Instance
+  # Optional: custom Jenkins API path
+  # apiBaseUrl: /remote/api

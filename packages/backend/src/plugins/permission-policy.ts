@@ -1,37 +1,41 @@
 import {
-  IdentityPermissionPolicy,
-  PolicyQuery,
   BackstageIdentityResponse,
+  PolicyDecision,
+  PermissionPolicy,
+  PermissionCriteria,
 } from '@backstage/plugin-permission-node';
+import { isPermission } from '@backstage/plugin-permission-common';
 
 /**
- * A simple permission policy that grants all permissions to admins.
+ * A simple permission policy that grants all permissions to users in the admin role.
+ * For others, it allows read access but denies write access.
  */
-export class AdminPermissionPolicy extends IdentityPermissionPolicy {
+export class AdminPermissionPolicy implements PermissionPolicy {
   async handle(
-    request: PolicyQuery,
+    request: PolicyDecision,
     user?: BackstageIdentityResponse,
-  ): Promise<PolicyQuery> {
-    // If no user, continue with default policy
-    if (!user) {
-      return request;
+  ): Promise<PolicyDecision> {
+    // Allow access to admin users
+    if (user && user.identity.userEntityRef) {
+      const userRef = user.identity.userEntityRef;
+      // Check if user is in admins group or has admin role
+      const isAdmin = 
+        user.identity.ownershipEntityRefs?.some(ref => 
+          ref.toLowerCase().includes('group:default/admins')
+        ) || 
+        userRef.toLowerCase().includes('user:default/admin');
+
+      if (isAdmin) {
+        return { result: { type: 'ALLOW' } };
+      }
     }
 
-    // Log the user entity information for debugging
-    console.log('Permission check for user:', user.identity.userEntityRef);
-    console.log('User ownership refs:', user.identity.ownershipEntityRefs);
-
-    // If the user has the admin role, allow all permissions
-    const isAdmin = 
-      user.identity.ownershipEntityRefs?.some(ref => ref.includes('group:default/admins')) ||
-      user.identity.userEntityRef === 'user:default/admin';
-
-    if (isAdmin) {
-      console.log(`Admin access granted for ${user.identity.userEntityRef}`);
-      return { result: { type: 'ALLOW' } };
+    // For non-admins, allow read but deny write
+    if (isPermission(request) && request.permission.attributes.action.startsWith('create')) {
+      return { result: { type: 'DENY' } };
     }
 
-    // Otherwise, proceed with the default permission policy
-    return super.handle(request, user);
+    // Default to allowing access for read operations
+    return { result: { type: 'ALLOW' } };
   }
 }
