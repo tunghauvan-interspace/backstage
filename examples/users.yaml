@@ -9,7 +9,22 @@ metadata:
 spec:
   memberOf: [guests]
 ---
-# You should edit this to match your actual GitHub username
+# Admin user configuration
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: admin
+  annotations:
+    # Replace with your actual GitHub username
+    github.com/user-login: tunghauvan-interspace
+    backstage.io/edit-url: https://github.com/settings/profile
+  # Adding admin role tags to metadata
+  tags:
+    - admin
+spec:
+  memberOf: [admins]
+---
+# Your regular GitHub user (you can merge this with the admin user above if they're the same person)
 apiVersion: backstage.io/v1alpha1
 kind: User
 metadata:

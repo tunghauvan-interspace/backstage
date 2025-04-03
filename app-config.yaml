@@ -77,6 +77,12 @@ auth:
             - resolver: usernameMatchingUserEntityName
     # See https://backstage.io/docs/auth/guest/provider
     guest: {}
+  
+  # Add this section to enable identification of admin users and groups
+  roles:
+    admin:
+      users: [admin]
+      groups: [admins]
 
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
@@ -128,5 +134,30 @@ kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
 
 permission:
-  # setting this to `false` will disable permissions
   enabled: true
+  
+  # Define admin permissions explicitly
+  rbac:
+    roles:
+      admin:
+        users: [admin]
+        groups: [admins]
+      editor:
+        users: []
+        groups: [guests]
+      viewer:
+        users: [guest]
+        groups: []
+    
+    policies:
+      - role: admin
+        effect: allow
+        actions: ['*']
+      - role: editor
+        effect: allow
+        actions: ['catalog.entity.read', 'catalog.entity.create']
+        resources: ['catalog-entity']
+      - role: viewer
+        effect: allow
+        actions: ['catalog.entity.read']
+        resources: ['catalog-entity']

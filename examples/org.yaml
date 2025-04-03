@@ -16,6 +16,23 @@ spec:
   type: team
   children: []
 ---
+# Admin group configuration
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: admins
+  description: Backstage Administrators
+  annotations:
+    backstage.io/edit-url: http://example.com
+spec:
+  type: team
+  profile:
+    displayName: Backstage Administrators
+    email: admin@example.com
+    picture: https://avatars.dicebear.com/api/identicon/admin.svg
+  parent: guests
+  children: []
+---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-user
 apiVersion: backstage.io/v1alpha1
 kind: User
