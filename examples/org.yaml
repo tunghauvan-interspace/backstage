@@ -39,4 +39,4 @@ kind: User
 metadata:
   name: tunghauvan-interspace
 spec:
-  memberOf: [guests]
+  memberOf: [admins]
