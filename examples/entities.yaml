@@ -16,13 +16,13 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: example-website
+  name: bff-publisher
   annotations:
     backstage.io/owner: guests
-    backstage.io/techdocs-ref: url:https://github.com/your-org/your-repo/docs
-    backstage.io/source-location: url:https://github.com/your-org/your-repo
+    backstage.io/techdocs-ref: dir:./example-docs/catalog-info.yaml
+    backstage.io/source-location: url:https://github.com/interspace-obs/bff-publisher
     # Add Jenkins annotation to the component as well if needed
-    jenkins.io/job-full-name: "Indonesia ISTools Staging Deployment"
+    jenkins.io/job-full-name: "DEV_BFFPublisher"
 spec:
   type: website
   lifecycle: experimental

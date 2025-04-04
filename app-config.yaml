@@ -118,6 +118,13 @@ catalog:
       rules:
         - allow: [User]
 
+    # Add the technical documentation file
+    - type: file
+      target: ../../examples/example-docs/catalog-info.yaml
+      rules:
+        - allow: [Component, System, API, Resource]
+        - allow: [Documentation]
+
     ## Uncomment these lines to add more example data
     # - type: url
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml
@@ -166,7 +173,7 @@ permission:
 
 # Add this Jenkins integration configuration
 jenkins:
-  baseUrl: http://masterjenkins.asean-accesstrade.net
+  baseUrl: https://ci.asean-accesstrade.net
   username: ${JENKINS_USERNAME}
   apiKey: ${JENKINS_API_KEY}
   # Optional: custom page title

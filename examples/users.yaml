@@ -31,7 +31,7 @@ metadata:
   name: github-user
   annotations:
     # Replace YOUR_GITHUB_USERNAME with your actual GitHub username
-    github.com/user-login: YOUR_GITHUB_USERNAME
+    github.com/user-login: tunghauvan-interspace
     backstage.io/edit-url: https://github.com/settings/profile
 spec:
   memberOf: [guests]

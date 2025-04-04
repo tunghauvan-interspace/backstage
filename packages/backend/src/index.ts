@@ -16,6 +16,8 @@ require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') });
 // Import the admin permission policy
 import { AdminPermissionPolicy } from './plugins/permission-policy';
 
+import auth from './plugins/auth';
+
 // Create a backend instance with more explicit logging for auth
 const backend = createBackend({
   services: [
@@ -70,5 +72,26 @@ backend.add(import('@backstage/plugin-kubernetes-backend'));
 
 // Jenkins plugin
 backend.add(import('@backstage/plugin-jenkins-backend'));
+
+function makeCreateEnv(config: Config) {
+  // ...existing code...
+}
+
+async function main() {
+  // ...existing code...
+
+  const authEnv = useHotMemoize(module, () => createEnv('auth'));
+  const catalogEnv = useHotMemoize(module, () => createEnv('catalog'));
+  // ...other env declarations...
+
+  // ...existing code...
+
+  const apiRouter = Router();
+  apiRouter.use('/auth', await auth(authEnv));
+  apiRouter.use('/catalog', await catalog(catalogEnv));
+  // ...other routers...
+
+  // ...existing code...
+}
 
 backend.start();
