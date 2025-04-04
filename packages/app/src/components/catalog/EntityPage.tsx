@@ -63,7 +63,9 @@ import {
   isJenkinsAvailable,
   EntityJenkinsContent,
   EntityLatestJenkinsRunCard
-} from '@backstage/plugin-jenkins';
+} from '@backstage-community/plugin-jenkins';
+
+import { EntitySonarQubeCard } from '@backstage-community/plugin-sonarqube';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -71,37 +73,6 @@ const techdocsContent = (
       <ReportIssue />
     </TechDocsAddons>
   </EntityTechdocsContent>
-);
-
-const cicdContent = (
-  // This is an example of how you can implement your company's logic in entity page.
-  // You can for example enforce that all components of type 'service' should use GitHubActions
-  <EntitySwitch>
-    {/*
-      Here you can add support for different CI/CD services, for example
-      using @backstage-community/plugin-github-actions as follows:
-      <EntitySwitch.Case if={isGithubActionsAvailable}>
-        <EntityGithubActionsContent />
-      </EntitySwitch.Case>
-     */}
-
-    <EntitySwitch.Case>
-      <EmptyState
-        title="No CI/CD available for this entity"
-        missing="info"
-        description="You need to add an annotation to your component if you want to enable CI/CD for it. You can read more about annotations in Backstage by clicking the button below."
-        action={
-          <Button
-            variant="contained"
-            color="primary"
-            href="https://backstage.io/docs/features/software-catalog/well-known-annotations"
-          >
-            Read more
-          </Button>
-        }
-      />
-    </EntitySwitch.Case>
-  </EntitySwitch>
 );
 
 const entityWarningContent = (
@@ -135,28 +106,53 @@ const entityWarningContent = (
 const overviewContent = (
   <Grid container spacing={3} alignItems="stretch">
     {entityWarningContent}
+    
     <Grid item md={6}>
       <EntityAboutCard variant="gridItem" />
     </Grid>
-    <Grid item md={6} xs={12}>
-      <EntityCatalogGraphCard variant="gridItem" height={400} />
-    </Grid>
-
+    
     <EntitySwitch>
       <EntitySwitch.Case if={isJenkinsAvailable}>
-        <Grid item md={6}>
-          <EntityLatestJenkinsRunCard  branch=''/>
+        <Grid item md={6} xs={12}>
+          <EntityLatestJenkinsRunCard branch='' />
         </Grid>
       </EntitySwitch.Case>
     </EntitySwitch>
 
-    <Grid item md={4} xs={12}>
+    <EntitySwitch>
+      <EntitySwitch.Case if={isJenkinsAvailable}>
+        <Grid item md={6} xs={12}>
+          <EntitySonarQubeCard />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
+
+    <Grid item md={6} xs={12}>
       <EntityLinksCard />
     </Grid>
-    <Grid item md={8} xs={12}>
+
+    <Grid item xs={12}>
+      <EntityCatalogGraphCard variant="gridItem" height={400} />
+    </Grid>
+
+    <Grid item xs={12}>
       <EntityHasSubcomponentsCard variant="gridItem" />
     </Grid>
   </Grid>
+);
+
+const cicdContent = (
+  <EntitySwitch>
+    <EntitySwitch.Case if={isJenkinsAvailable}>
+      <EntityJenkinsContent />
+    </EntitySwitch.Case>
+    <EntitySwitch.Case>
+      <EmptyState
+        title="No CI/CD Integration Available"
+        description="CI/CD information will appear here when configured."
+      />
+    </EntitySwitch.Case>
+  </EntitySwitch>
 );
 
 const serviceEntityPage = (
@@ -165,16 +161,12 @@ const serviceEntityPage = (
       {overviewContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/ci-cd" title="CI/CD">
-      {cicdContent}
+    <EntityLayout.Route path="/docs" title="Documentation">
+      {techdocsContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route
-      path="/kubernetes"
-      title="Kubernetes"
-      if={isKubernetesAvailable}
-    >
-      <EntityKubernetesContent />
+    <EntityLayout.Route path="/ci-cd" title="CI/CD">
+      {cicdContent}
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/api" title="API">
@@ -199,22 +191,12 @@ const serviceEntityPage = (
       </Grid>
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/docs" title="Docs">
-      {techdocsContent}
-    </EntityLayout.Route>
-
-    <EntityLayout.Route path="/jenkins" title="Jenkins">
-      <EntitySwitch>
-        <EntitySwitch.Case if={isJenkinsAvailable}>
-          <EntityJenkinsContent />
-        </EntitySwitch.Case>
-        <EntitySwitch.Case>
-          <EmptyState
-            title="No Jenkins available for this entity"
-            description="You need to add a jenkins.io/job-full-name annotation to see Jenkins builds here."
-          />
-        </EntitySwitch.Case>
-      </EntitySwitch>
+    <EntityLayout.Route
+      path="/kubernetes"
+      title="Kubernetes"
+      if={isKubernetesAvailable}
+    >
+      <EntityKubernetesContent />
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -225,16 +207,12 @@ const websiteEntityPage = (
       {overviewContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/ci-cd" title="CI/CD">
-      {cicdContent}
+    <EntityLayout.Route path="/docs" title="Documentation">
+      {techdocsContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route
-      path="/kubernetes"
-      title="Kubernetes"
-      if={isKubernetesAvailable}
-    >
-      <EntityKubernetesContent />
+    <EntityLayout.Route path="/ci-cd" title="CI/CD">
+      {cicdContent}
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/dependencies" title="Dependencies">
@@ -248,8 +226,12 @@ const websiteEntityPage = (
       </Grid>
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/docs" title="Docs">
-      {techdocsContent}
+    <EntityLayout.Route
+      path="/kubernetes"
+      title="Kubernetes"
+      if={isKubernetesAvailable}
+    >
+      <EntityKubernetesContent />
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -267,7 +249,7 @@ const defaultEntityPage = (
       {overviewContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/docs" title="Docs">
+    <EntityLayout.Route path="/docs" title="Documentation">
       {techdocsContent}
     </EntityLayout.Route>
   </EntityLayout>
@@ -296,10 +278,10 @@ const apiPage = (
           <EntityAboutCard />
         </Grid>
         <Grid item md={6} xs={12}>
-          <EntityCatalogGraphCard variant="gridItem" height={400} />
-        </Grid>
-        <Grid item md={4} xs={12}>
           <EntityLinksCard />
+        </Grid>
+        <Grid item xs={12}>
+          <EntityCatalogGraphCard variant="gridItem" height={400} />
         </Grid>
         <Grid container item md={12}>
           <Grid item md={6}>
@@ -312,7 +294,7 @@ const apiPage = (
       </Grid>
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/definition" title="Definition">
+    <EntityLayout.Route path="/definition" title="API Definition">
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <EntityApiDefinitionCard />
@@ -369,12 +351,12 @@ const systemPage = (
           <EntityAboutCard variant="gridItem" />
         </Grid>
         <Grid item md={6} xs={12}>
-          <EntityCatalogGraphCard variant="gridItem" height={400} />
-        </Grid>
-        <Grid item md={4} xs={12}>
           <EntityLinksCard />
         </Grid>
-        <Grid item md={8}>
+        <Grid item xs={12}>
+          <EntityCatalogGraphCard variant="gridItem" height={400} />
+        </Grid>
+        <Grid item md={6}>
           <EntityHasComponentsCard variant="gridItem" />
         </Grid>
         <Grid item md={6}>
@@ -385,7 +367,8 @@ const systemPage = (
         </Grid>
       </Grid>
     </EntityLayout.Route>
-    <EntityLayout.Route path="/diagram" title="Diagram">
+    
+    <EntityLayout.Route path="/diagram" title="System Diagram">
       <EntityCatalogGraphCard
         variant="gridItem"
         direction={Direction.TOP_BOTTOM}
@@ -416,9 +399,12 @@ const domainPage = (
           <EntityAboutCard variant="gridItem" />
         </Grid>
         <Grid item md={6} xs={12}>
+          <EntityLinksCard />
+        </Grid>
+        <Grid item xs={12}>
           <EntityCatalogGraphCard variant="gridItem" height={400} />
         </Grid>
-        <Grid item md={6}>
+        <Grid item xs={12}>
           <EntityHasSystemsCard variant="gridItem" />
         </Grid>
       </Grid>

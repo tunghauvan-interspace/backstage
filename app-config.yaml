@@ -46,6 +46,10 @@ integrations:
     #   token: ${GHE_TOKEN}
 
 proxy:
+  '/sonarqube':
+    target: https://sonarqube.asean-accesstrade.net/api
+    allowedMethods: ['GET']
+    auth: "${SONARQUBE_TOKEN}:"
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.
   # endpoints:
@@ -125,7 +129,7 @@ catalog:
         - allow: [Component, System, API, Resource]
         - allow: [Documentation]
 
-    ## Uncomment these lines to add more example data
+    # Uncomment these lines to add more example data
     # - type: url
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml
 
@@ -180,3 +184,13 @@ jenkins:
   pageTitle: My Jenkins Instance
   # Optional: custom Jenkins API path
   # apiBaseUrl: /remote/api
+
+sonarqube:
+  baseUrl: https://sonarqube.asean-accesstrade.net
+  apiKey: ${SONARQUBE_TOKEN}
+  instanceKey: interspace-obs-sonarqube
+  # Define instances explicitly
+  instances:
+    - name: interspace-obs-sonarqube
+      baseUrl: https://sonarqube.asean-accesstrade.net
+      apiKey: ${SONARQUBE_TOKEN}

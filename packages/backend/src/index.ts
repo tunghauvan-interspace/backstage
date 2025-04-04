@@ -71,7 +71,11 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 backend.add(import('@backstage/plugin-kubernetes-backend'));
 
 // Jenkins plugin
-backend.add(import('@backstage/plugin-jenkins-backend'));
+backend.add(import('@backstage-community/plugin-jenkins-backend'));
+
+// SonarQube plugin
+backend.add(import('@backstage-community/plugin-sonarqube-backend'));
+
 
 function makeCreateEnv(config: Config) {
   // ...existing code...
@@ -82,6 +86,7 @@ async function main() {
 
   const authEnv = useHotMemoize(module, () => createEnv('auth'));
   const catalogEnv = useHotMemoize(module, () => createEnv('catalog'));
+  const sonarqubeEnv = useHotMemoize(module, () => createEnv('sonarqube'));
   // ...other env declarations...
 
   // ...existing code...
@@ -89,6 +94,7 @@ async function main() {
   const apiRouter = Router();
   apiRouter.use('/auth', await auth(authEnv));
   apiRouter.use('/catalog', await catalog(catalogEnv));
+  apiRouter.use('/sonarqube', await sonarqube(sonarqubeEnv));
   // ...other routers...
 
   // ...existing code...

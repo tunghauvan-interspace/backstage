@@ -19,37 +19,68 @@ metadata:
   name: bff-publisher
   annotations:
     backstage.io/owner: guests
-    backstage.io/techdocs-ref: dir:./example-docs/catalog-info.yaml
+    backstage.io/techdocs-ref: url:https://github.com/tunghauvan-interspace/backstage/tree/master/examples/example-docs
     backstage.io/source-location: url:https://github.com/interspace-obs/bff-publisher
     # Add Jenkins annotation to the component as well if needed
     jenkins.io/job-full-name: "DEV_BFFPublisher"
+    sonarqube.org/project-key: "interspace-obs-sonarqube/bff-publisher"
+  links:
+  - url: https://grafana.asean-accesstrade.net/
+    title: My Dashboard
+    icon: dashboard
 spec:
-  type: website
+  type: service
   lifecycle: experimental
   owner: guests
   system: examples
-  providesApis: [example-grpc-api]
+  providesApis: [example-rest-api]
 ---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
 apiVersion: backstage.io/v1alpha1
 kind: API
 metadata:
-  name: example-grpc-api
+  name: bff-publisher-rest-api
   annotations:
     backstage.io/owner: guests
     backstage.io/api-docs: url:https://example.com/openapi.yaml
 spec:
-  type: grpc
+  type: openapi
   lifecycle: experimental
   owner: guests
   system: examples
   definition: |
-    syntax = "proto3";
-
-    service Exampler {
-      rpc Example (ExampleMessage) returns (ExampleMessage) {};
-    }
-
-    message ExampleMessage {
-      string example = 1;
-    };
+    openapi: 3.0.0
+    info:
+      title: Example REST API
+      version: '1.0.0'
+      description: A simple REST API example
+    paths:
+      /examples:
+        get:
+          summary: Get examples
+          responses:
+            '200':
+              description: Successful response
+              content:
+                application/json:
+                  schema:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Example'
+        post:
+          summary: Create example
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Example'
+          responses:
+            '201':
+              description: Example created
+    components:
+      schemas:
+        Example:
+          type: object
+          properties:
+            example:
+              type: string
