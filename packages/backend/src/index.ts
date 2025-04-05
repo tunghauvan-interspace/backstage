@@ -56,6 +56,10 @@ backend.add(
 );
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
+backend.add(import('@backstage/plugin-catalog-backend-module-github-org'));
+
+
+
 // permission plugin
 backend.add(import('@backstage/plugin-permission-backend'));
 // This is the module mentioned in the error message
@@ -76,6 +80,8 @@ backend.add(import('@backstage-community/plugin-jenkins-backend'));
 // SonarQube plugin
 backend.add(import('@backstage-community/plugin-sonarqube-backend'));
 
+// GitHub Pull Requests plugin
+// backend.add(import('@backstage/plugin-github-pull-requests-backend'));
 
 function makeCreateEnv(config: Config) {
   // ...existing code...

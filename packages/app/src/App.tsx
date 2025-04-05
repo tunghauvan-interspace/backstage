@@ -37,10 +37,15 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+import githubPullRequestsPlugin from '@backstage-community/plugin-github-pull-requests-board/alpha';
+
 // import { jenkinsPlugin } from '@backstage/plugin-jenkins';
 
 const app = createApp({
   apis,
+  features: [
+    githubPullRequestsPlugin,
+  ],
   bindRoutes({ bind }) {
     bind(catalogPlugin.externalRoutes, {
       createComponent: scaffolderPlugin.routes.root,

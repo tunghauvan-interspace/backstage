@@ -66,6 +66,13 @@ import {
 } from '@backstage-community/plugin-jenkins';
 
 import { EntitySonarQubeCard } from '@backstage-community/plugin-sonarqube';
+import { EntityTeamPullRequestsCard } from '@backstage-community/plugin-github-pull-requests-board';
+
+import {
+  EntityGithubPullRequestsContent,
+  isGithubPullRequestsAvailable,
+} from '@roadiehq/backstage-plugin-github-pull-requests';
+
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -190,6 +197,16 @@ const serviceEntityPage = (
         </Grid>
       </Grid>
     </EntityLayout.Route>
+
+    <EntityLayout.Route
+      path="/pull-requests"
+      title="Pull Requests"
+      // Uncomment the line below if you'd like to only show the tab on entities with the correct annotations already set
+      // if={isGithubPullRequestsAvailable}
+    >
+      <EntityGithubPullRequestsContent />
+    </EntityLayout.Route>
+
 
     <EntityLayout.Route
       path="/kubernetes"
@@ -336,6 +353,9 @@ const groupPage = (
         </Grid>
         <Grid item xs={12} md={6}>
           <EntityLinksCard />
+        </Grid>
+        <Grid item xs={12}>
+          <EntityTeamPullRequestsCard  />
         </Grid>
       </Grid>
     </EntityLayout.Route>

@@ -35,11 +35,11 @@ backend:
     NODE_OPTIONS: --no-node-snapshot
 
 integrations:
-  github:
-    - host: github.com
-      # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
-      # about setting up the GitHub integration here: https://backstage.io/docs/integrations/github/locations#configuration
-      token: ${GITHUB_TOKEN}
+  # github:
+  #   - host: github.com
+  #     # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
+  #     # about setting up the GitHub integration here: https://backstage.io/docs/integrations/github/locations#configuration
+  #     token: ${GITHUB_TOKEN}
     ### Example for how to add your GitHub Enterprise instance using the API:
     # - host: ghe.example.net
     #   apiBaseUrl: https://ghe.example.net/api/v3
@@ -81,6 +81,8 @@ auth:
         signIn:
           resolvers:
             - resolver: usernameMatchingUserEntityName
+        # Add this to ensure private repository access
+        privateRepoAccess: true
     # See https://backstage.io/docs/auth/guest/provider
     guest: {}
   
@@ -92,6 +94,10 @@ auth:
 
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
+  github:
+    token:
+      $env: GITHUB_TOKEN
+    visibility: private # or 'internal' or 'private'
 
 catalog:
   import:
@@ -142,6 +148,13 @@ catalog:
   # Experimental: Always use the search method in UrlReaderProcessor.
   # New adopters are encouraged to enable it as this behavior will be the default in a future release.
   useUrlReadersSearch: true
+  githubOrgs:
+    - name: interspace-devops
+      # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
+      # about setting up the GitHub integration here: https://backstage.io/docs/integrations/github/locations#configuration
+      token: ${GITHUB_TOKEN}
+      # The GitHub organization name to use for the catalog import
+      org: [interspace-devops]
 
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
@@ -188,9 +201,9 @@ jenkins:
 sonarqube:
   baseUrl: https://sonarqube.asean-accesstrade.net
   apiKey: ${SONARQUBE_TOKEN}
-  instanceKey: interspace-obs-sonarqube
+  instanceKey: interspace-devops-sonarqube
   # Define instances explicitly
   instances:
-    - name: interspace-obs-sonarqube
+    - name: interspace-devops-sonarqube
       baseUrl: https://sonarqube.asean-accesstrade.net
       apiKey: ${SONARQUBE_TOKEN}

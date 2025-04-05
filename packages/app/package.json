@@ -14,6 +14,7 @@
     "lint": "backstage-cli package lint"
   },
   "dependencies": {
+    "@backstage-community/plugin-github-pull-requests-board": "^0.5.0",
     "@backstage-community/plugin-jenkins": "^0.17.0",
     "@backstage-community/plugin-jenkins-backend": "^0.12.1",
     "@backstage-community/plugin-sonarqube": "^0.11.0",
@@ -44,6 +45,7 @@
     "@backstage/theme": "^0.6.4",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
+    "@roadiehq/backstage-plugin-github-pull-requests": "^3.4.2",
     "react": "^18.0.2",
     "react-dom": "^18.0.2",
     "react-router": "^6.3.0",

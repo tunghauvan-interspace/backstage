@@ -20,10 +20,11 @@ metadata:
   annotations:
     backstage.io/owner: guests
     backstage.io/techdocs-ref: url:https://github.com/tunghauvan-interspace/backstage/tree/master/examples/example-docs
-    backstage.io/source-location: url:https://github.com/interspace-obs/bff-publisher
+    backstage.io/source-location: url:https://github.com/interspace-devops/bff-publisher
+    github.com/project-slug: interspace-devops/bff-publisher
     # Add Jenkins annotation to the component as well if needed
     jenkins.io/job-full-name: "DEV_BFFPublisher"
-    sonarqube.org/project-key: "interspace-obs-sonarqube/bff-publisher"
+    sonarqube.org/project-key: "interspace-devops-sonarqube/bff-publisher"
   links:
   - url: https://grafana.asean-accesstrade.net/
     title: My Dashboard
@@ -33,7 +34,7 @@ spec:
   lifecycle: experimental
   owner: guests
   system: examples
-  providesApis: [example-rest-api]
+  providesApis: [bff-publisher-rest-api]
 ---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
 apiVersion: backstage.io/v1alpha1
