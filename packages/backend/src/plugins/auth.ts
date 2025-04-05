@@ -24,6 +24,14 @@ export default async function createPlugin(
     tokenManager: env.tokenManager,
     providerFactories: {
       github: createGithubProvider({
+        // Auth provider configuration
+        authHandler: {
+          // Configure cache settings for authentication responses
+          cache: {
+            // Set cache TTL in seconds
+            ttl: 3600,
+          },
+        },
         signIn: {
           resolver: async (info, ctx) => {
             // Customize the resolver to match your GitHub username to a user entity in the catalog

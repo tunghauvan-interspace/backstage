@@ -58,8 +58,6 @@ backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
 backend.add(import('@backstage/plugin-catalog-backend-module-github-org'));
 
-
-
 // permission plugin
 backend.add(import('@backstage/plugin-permission-backend'));
 // This is the module mentioned in the error message
@@ -89,6 +87,23 @@ function makeCreateEnv(config: Config) {
 
 async function main() {
   // ...existing code...
+
+  // Add a startup hook to execute code on application startup
+  const startupHook = async () => {
+    logger.info('Executing startup hook...');
+    
+    // Add your startup logic here
+    // Examples:
+    // - Initialize connections to external services
+    // - Perform data migrations
+    // - Set up recurring tasks
+    // - Load initial configuration
+    
+    logger.info('Startup hook completed successfully');
+  };
+
+  // Register the startup hook
+  await startupHook();
 
   const authEnv = useHotMemoize(module, () => createEnv('auth'));
   const catalogEnv = useHotMemoize(module, () => createEnv('catalog'));

@@ -30,16 +30,15 @@ backend:
   database:
     client: better-sqlite3
     connection: ':memory:'
-  # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
   env:
     NODE_OPTIONS: --no-node-snapshot
 
 integrations:
-  # github:
-  #   - host: github.com
-  #     # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
-  #     # about setting up the GitHub integration here: https://backstage.io/docs/integrations/github/locations#configuration
-  #     token: ${GITHUB_TOKEN}
+  github:
+    - host: github.com
+      # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
+      # about setting up the GitHub integration here: https://backstage.io/docs/integrations/github/locations#configuration
+      token: ${GITHUB_TOKEN}
     ### Example for how to add your GitHub Enterprise instance using the API:
     # - host: ghe.example.net
     #   apiBaseUrl: https://ghe.example.net/api/v3
@@ -69,20 +68,22 @@ techdocs:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
 auth:
-  # see https://backstage.io/docs/auth/ to learn about auth providers
   environment: development
   providers:
     github:
       development:
-        clientId: ${AUTH_GITHUB_CLIENT_ID}
-        clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
-        # Explicitly set the callback URL to match what's in your GitHub OAuth app
-        callbackUrl: http://localhost:7007/api/auth/github/handler/frame
+        clientId: ${GITHUB_CLIENT_ID}
+        clientSecret: ${GITHUB_CLIENT_SECRET}
+        # Optional: Scope can be configured if needed
+        scope: 'read:user, read:org'
+        # Optional: Enterprise instance URL
+        # enterpriseInstanceUrl: https://github.enterprise.example.com
+        # Optional: Allowed organizations for sign-in
+        allowedOrganizations: ['interspace-devops']
+        privateRepoAccess: true
         signIn:
           resolvers:
             - resolver: usernameMatchingUserEntityName
-        # Add this to ensure private repository access
-        privateRepoAccess: true
     # See https://backstage.io/docs/auth/guest/provider
     guest: {}
   
@@ -98,6 +99,8 @@ scaffolder:
     token:
       $env: GITHUB_TOKEN
     visibility: private # or 'internal' or 'private'
+  env:
+    NODE_OPTIONS: --no-node-snapshot
 
 catalog:
   import:
@@ -144,6 +147,12 @@ catalog:
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme-corp.yaml
     #   rules:
     #     - allow: [User, Group]
+  # GitHub organization integration
+  providers:
+    github:
+      organization:
+        name: interspace-devops
+        configRefreshIntervalMs: 300000 # 5 minutes
 
   # Experimental: Always use the search method in UrlReaderProcessor.
   # New adopters are encouraged to enable it as this behavior will be the default in a future release.
