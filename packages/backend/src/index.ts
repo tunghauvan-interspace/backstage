@@ -138,4 +138,5 @@ async function main() {
   // ...existing code...
 }
 
+backend.add(import('@internal/plugin-approval-backend'));
 backend.start();
