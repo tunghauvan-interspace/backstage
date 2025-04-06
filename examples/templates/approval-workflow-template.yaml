@@ -54,7 +54,7 @@ spec:
 
     - id: request-approval
       name: Request Approval
-      action: scaffolder:approval
+      action: request:approval
       input:
         title: Approve Component Creation
         description: |

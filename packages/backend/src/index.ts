@@ -54,9 +54,8 @@ backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
 // - input: To receive inputs from templates
 // - createTemporaryDirectory: For temp file operations
 backend.add(import('@internal/plugin-scaffolder-backend-module-example'));
-
-// Register the approval module to enable approval workflows in templates
 backend.add(import('@internal/plugin-scaffolder-backend-module-approval'));
+
 
 // Add other backend plugins
 backend.add(import('@backstage/plugin-techdocs-backend'));
