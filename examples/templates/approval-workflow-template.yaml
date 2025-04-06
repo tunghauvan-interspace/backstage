@@ -1,0 +1,94 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: approval-workflow-example
+  title: Approval Workflow Example
+  description: This template demonstrates how to use approval flows in your templates
+spec:
+  owner: backstage/core-team
+  type: service
+  
+  parameters:
+    - title: Basic Information
+      required:
+        - name
+        - owner
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Name of the component
+          ui:field: EntityNamePicker
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - User
+              - Group
+    
+    - title: Approval Configuration
+      properties:
+        approver:
+          title: Approver
+          type: string
+          description: User or group who can approve this request
+          ui:field: EntityPicker
+          ui:options:
+            allowedKinds:
+              - User
+              - Group
+
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:plain
+      input:
+        targetPath: ./
+        url: https://github.com/backstage/backstage/tree/master/plugins/scaffolder-backend/sample-templates/react-ssr-template/skeleton
+
+    - id: pre-approval-message
+      name: Pre-Approval Message
+      action: debug:log
+      input:
+        message: Waiting for approval before proceeding with resource creation
+
+    # Replacing the approval step with a debug log step that simulates approval
+    - id: request-approval
+      name: Request Approval Simulation
+      action: scaffolder:approval
+      input:
+        approver: ${{ parameters.approver }}
+        message: |
+          A new component named "${{ parameters.name }}" requires your approval.
+          Please review and approve the request.
+      # input:
+      #   message: |
+      #     APPROVAL SIMULATION:
+      #     A new component named "${{ parameters.name }}" would require approval from "${{ parameters.approver }}".
+      #     Since the approval action is not yet registered, we're automatically continuing.
+      #     To implement a real approval action, register a custom action in your backend.
+
+    # Replace wait:for with another debug:log as a simulation
+    - id: simulate-approval-wait  
+      name: Simulating Approval Wait
+      action: debug:log
+      input:
+        message: |
+          Simulating approval wait...
+          In a real implementation, this would pause until an approval is received.
+          Continuing after simulated approval...
+
+    - id: post-approval-message
+      name: Post-Approval Message
+      action: debug:log
+      input:
+        message: Approval received! Continuing with resource creation.
+        # This step only executes if the approval is granted
+  
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}

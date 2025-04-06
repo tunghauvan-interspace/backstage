@@ -40,8 +40,25 @@ console.log(`AUTH_GITHUB_CLIENT_SECRET exists: ${Boolean(process.env.AUTH_GITHUB
 
 backend.add(import('@backstage/plugin-app-backend'));
 backend.add(import('@backstage/plugin-proxy-backend'));
+
+// Add scaffolder backend and its required modules
 backend.add(import('@backstage/plugin-scaffolder-backend'));
 backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
+
+// Register the example module to demonstrate custom actions with context object
+// This provides access to:
+// - workspacePath: Work directory for template files
+// - logger: For logging information
+// - logStream: For user-facing logs
+// - output: To set outputs from actions
+// - input: To receive inputs from templates
+// - createTemporaryDirectory: For temp file operations
+backend.add(import('@internal/plugin-scaffolder-backend-module-example'));
+
+// Register the approval module to enable approval workflows in templates
+backend.add(import('@internal/plugin-scaffolder-backend-module-approval'));
+
+// Add other backend plugins
 backend.add(import('@backstage/plugin-techdocs-backend'));
 
 // auth plugin
