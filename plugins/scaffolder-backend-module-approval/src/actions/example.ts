@@ -22,7 +22,7 @@ export function createExampleAction() {
     schema: {
       input: {
         type: 'object',
-        required: ['title', 'description', 'approver'],
+        required: ['title', 'description', 'approvers'],
         properties: {
           title: {
             title: 'Approval Request Title',
@@ -34,10 +34,14 @@ export function createExampleAction() {
             description: 'Detailed description of what needs approval',
             type: 'string',
           },
-          approver: {
-            title: 'Approver',
-            description: 'User or group to approve the request',
-            type: 'string',
+          approvers: {
+            title: 'Approvers',
+            description: 'List of approvers for the request',
+            type: 'array',
+            items: {
+              type: 'string',
+              description: 'User ID or email of the approver',
+            },
           },
         },
       },
