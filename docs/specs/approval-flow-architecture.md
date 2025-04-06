@@ -8,7 +8,34 @@ This document outlines the technical architecture and integration points for imp
 
 The approval flow system is designed as an extension to the existing Backstage scaffolder plugin, adding a governance layer that can pause template execution pending approval decisions.
 
-![Approval Flow Architecture](../assets/approval-flow-architecture.png)
+```
+                                       ┌─────────────────────┐
+                                       │  External Systems   │
+                                       │  (JIRA, ServiceNow) │
+                                       └─────────┬───────────┘
+                                                 │
+                                                 ▼
+┌─────────────────┐    ┌──────────────┐    ┌────────────────┐    ┌──────────────────┐
+│  Template User  │───►│  Scaffolder  │───►│  Approval      │◄───┤  Approvers       │
+│                 │    │  Engine      │    │  Service       │    │  (Users/Groups)  │
+└─────────────────┘    └──────┬───────┘    └─────┬──────────┘    └──────────────────┘
+                              │                  │
+                              │                  │
+                              ▼                  ▼
+                      ┌──────────────────────────────────────┐
+                      │         Persistence Layer            │
+                      │  (State Store, History, Context)     │
+                      └──────────────────────────────────────┘
+                              │                  │
+                              │                  │
+                              ▼                  ▼
+                      ┌──────────────┐    ┌─────────────────┐
+                      │  Notification│    │ Frontend UI     │
+                      │  System      │    │ Components      │
+                      └──────────────┘    └─────────────────┘
+```
+
+<!-- Note: This is a placeholder diagram. Replace with an actual architecture diagram when available. -->
 
 ## Core Components
 
