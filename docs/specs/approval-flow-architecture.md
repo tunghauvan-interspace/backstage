@@ -14,9 +14,112 @@ The approval flow system is designed as an extension to the existing Backstage s
 
 ### 1. Scaffolder Plugin Extensions
 
-- **Approval Action**: A custom action (`scaffolder:approval`) that pauses template execution
-- **Task State Manager**: Manages the lifecycle of approval tasks and their status
-- **Approval Backend Service**: Handles approval requests and decisions
+#### Approval Action
+
+The **Approval Action** is a custom scaffolder action (`scaffolder:approval`) that:
+- Pauses template execution at a specific step
+- Creates an approval request in the system
+- Waits for approval decisions from authorized approvers
+- Continues or aborts execution based on decision outcome
+
+**Implementation Strategy:**
+```typescript
+// Extension of the scaffolder backend plugin
+class ApprovalAction implements ScaffolderAction {
+  id = 'scaffolder:approval';
+  
+  async handler(ctx: ActionContext) {
+    const { input, workspacePath, logger, taskId } = ctx;
+    
+    // Create approval request
+    const requestId = await ctx.approvalService.createRequest({
+      taskId,
+      title: input.title,
+      description: input.description,
+      approvers: input.approvers,
+      minApprovals: input.minApprovals || 1,
+      timeoutInMinutes: input.timeoutInMinutes,
+    });
+    
+    // Pause execution by returning a deferred promise
+    return ctx.approvalService.waitForDecision(requestId);
+  }
+}
+```
+
+#### Task State Manager
+
+The **Task State Manager** extends the Scaffolder's task system to:
+- Handle long-running approval tasks that may last for days
+- Manage state persistence across system restarts
+- Track approval status within the task lifecycle
+- Handle timeout and expiration of approval requests
+
+**State Transition Diagram:**
+```
+  [Task Created] 
+       │
+       ▼
+  [Pre-Approval Steps Running]
+       │
+       ▼
+  [Waiting for Approval] ─────────┐
+       │                          │
+       │                          ▼
+       │                   [Approval Timeout]
+       │                          │
+       ▼                          │
+  [Approval Decision]◄────────────┘
+       │
+       ├─── [Approved] ──► [Continue Execution]
+       │
+       └─── [Rejected] ──► [Terminate Execution]
+```
+
+#### Approval Backend Service
+
+The **Approval Backend Service** is a dedicated backend service that:
+- Manages the approval request lifecycle
+- Provides APIs for creating and retrieving approval requests
+- Processes approval decisions from approvers
+- Notifies the task manager when decisions are made
+- Integrates with external approval systems
+
+**Service Architecture:**
+```
+┌───────────────────────┐     ┌───────────────────┐
+│  Backstage Frontend   │     │  External Systems │
+└───────────┬───────────┘     └────────┬──────────┘
+            │                          │
+            ▼                          ▼
+┌───────────────────────────────────────────────┐
+│               API Controllers                 │
+└───────────────┬───────────────┬───────────────┘
+                │               │
+    ┌───────────▼─────┐  ┌─────▼───────────┐
+    │ Request Manager │  │ Decision Handler│
+    └───────────┬─────┘  └─────┬───────────┘
+                │               │
+                ▼               ▼
+┌───────────────────────────────────────────────┐
+│               Domain Services                 │
+│  - ApprovalRequestService                     │
+│  - NotificationService                        │
+│  - DecisionService                            │
+└───────────────────────┬───────────────────────┘
+                        │
+                        ▼
+┌───────────────────────────────────────────────┐
+│               Data Access Layer               │
+└───────────────────────────────────────────────┘
+```
+
+The service exposes the following key endpoints:
+- `POST /api/approval/requests` - Create a new approval request
+- `GET /api/approval/requests` - List approval requests
+- `GET /api/approval/requests/:id` - Get a specific request
+- `POST /api/approval/requests/:id/decision` - Submit a decision
+- `GET /api/approval/requests/:id/status` - Check request status
 
 ### 2. Frontend Components
 
