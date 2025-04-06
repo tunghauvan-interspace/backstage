@@ -3,14 +3,14 @@ import { InputError } from '@backstage/errors';
 import { z } from 'zod';
 import express from 'express';
 import Router from 'express-promise-router';
-import { TodoListService } from './services/TodoListService/types';
+import { ApprovalService } from './services/ApprovalService/types';
 
 export async function createRouter({
   httpAuth,
-  todoListService,
+  approvalService,
 }: {
   httpAuth: HttpAuthService;
-  todoListService: TodoListService;
+  approvalService: ApprovalService;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
@@ -21,30 +21,55 @@ export async function createRouter({
   //
   // If you want to define a schema for your API we recommend using Backstage's
   // OpenAPI tooling: https://backstage.io/docs/next/openapi/01-getting-started
-  const todoSchema = z.object({
+  const approvalSchema = z.object({
     title: z.string(),
     entityRef: z.string().optional(),
   });
 
-  router.post('/todos', async (req, res) => {
-    const parsed = todoSchema.safeParse(req.body);
+  const updateStatusSchema = z.object({
+    status: z.enum(['approved', 'rejected']),
+    comment: z.string().optional(),
+  });
+
+  router.post('/approvals', async (req, res) => {
+    const parsed = approvalSchema.safeParse(req.body);
     if (!parsed.success) {
       throw new InputError(parsed.error.toString());
     }
 
-    const result = await todoListService.createTodo(parsed.data, {
+    const result = await approvalService.createApproval(parsed.data, {
       credentials: await httpAuth.credentials(req, { allow: ['user'] }),
     });
 
     res.status(201).json(result);
   });
 
-  router.get('/todos', async (_req, res) => {
-    res.json(await todoListService.listTodos());
+  router.get('/approvals', async (_req, res) => {
+    res.json(await approvalService.listApprovals());
   });
 
-  router.get('/todos/:id', async (req, res) => {
-    res.json(await todoListService.getTodo({ id: req.params.id }));
+  router.get('/approvals/:id', async (req, res) => {
+    res.json(await approvalService.getApproval({ id: req.params.id }));
+  });
+
+  router.put('/approvals/:id/status', async (req, res) => {
+    const parsed = updateStatusSchema.safeParse(req.body);
+    if (!parsed.success) {
+      throw new InputError(parsed.error.toString());
+    }
+
+    const result = await approvalService.updateApprovalStatus(
+      {
+        id: req.params.id,
+        status: parsed.data.status,
+        comment: parsed.data.comment,
+      },
+      {
+        credentials: await httpAuth.credentials(req, { allow: ['user'] }),
+      },
+    );
+
+    res.json(result);
   });
 
   return router;

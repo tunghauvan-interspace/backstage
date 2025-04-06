@@ -1,0 +1,264 @@
+openapi: 3.0.0
+info:
+  title: Approval Service API
+  description: API for managing approval requests in Backstage
+  version: 1.0.0
+servers:
+  - url: http://localhost:7007/api/approval
+    description: Local development server
+
+paths:
+  /approvals:
+    post:
+      summary: Create a new approval request
+      description: Creates a new approval request with pending status
+      operationId: createApproval
+      tags:
+        - approvals
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovalInput'
+            examples:
+              basic:
+                summary: Basic approval request
+                value:
+                  title: Approve my new service
+              withEntity:
+                summary: Approval request with entity reference
+                value:
+                  title: Approve my new service
+                  entityRef: component:default/my-service
+      responses:
+        '201':
+          description: Approval request created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalItem'
+              example:
+                id: 123e4567-e89b-12d3-a456-426614174000
+                title: "[My Service] Approve my new service"
+                status: pending
+                entityRef: component:default/my-service
+                createdBy: user:default/john.doe
+                createdAt: "2023-07-25T12:34:56.789Z"
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      summary: List all approval requests
+      description: Retrieves a list of all approval requests
+      operationId: listApprovals
+      tags:
+        - approvals
+      responses:
+        '200':
+          description: A list of approval requests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApprovalItem'
+              example:
+                items:
+                  - id: 123e4567-e89b-12d3-a456-426614174000
+                    title: "[My Service] Approve my new service"
+                    status: pending
+                    entityRef: component:default/my-service
+                    createdBy: user:default/john.doe
+                    createdAt: "2023-07-25T12:34:56.789Z"
+                  - id: 223e4567-e89b-12d3-a456-426614174000
+                    title: "Approve infrastructure change"
+                    status: approved
+                    createdBy: user:default/jane.smith
+                    createdAt: "2023-07-24T10:20:30.400Z"
+                    updatedAt: "2023-07-24T11:22:33.444Z"
+                    updatedBy: user:default/approver
+                    comment: "Looks good!"
+
+  /approvals/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the approval request
+        schema:
+          type: string
+    get:
+      summary: Get a specific approval request
+      description: Retrieves a specific approval request by ID
+      operationId: getApproval
+      tags:
+        - approvals
+      responses:
+        '200':
+          description: The requested approval
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalItem'
+              example:
+                id: 123e4567-e89b-12d3-a456-426614174000
+                title: "[My Service] Approve my new service"
+                status: pending
+                entityRef: component:default/my-service
+                createdBy: user:default/john.doe
+                createdAt: "2023-07-25T12:34:56.789Z"
+        '404':
+          description: Approval request not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /approvals/{id}/status:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the approval request
+        schema:
+          type: string
+    put:
+      summary: Update approval status
+      description: Updates the status of an approval request
+      operationId: updateApprovalStatus
+      tags:
+        - approvals
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovalStatusUpdate'
+            examples:
+              approve:
+                summary: Approve the request
+                value:
+                  status: approved
+                  comment: Looks good!
+              reject:
+                summary: Reject the request
+                value:
+                  status: rejected
+                  comment: Needs more details
+      responses:
+        '200':
+          description: Status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalItem'
+              example:
+                id: 123e4567-e89b-12d3-a456-426614174000
+                title: "[My Service] Approve my new service"
+                status: approved
+                entityRef: component:default/my-service
+                createdBy: user:default/john.doe
+                createdAt: "2023-07-25T12:34:56.789Z"
+                updatedBy: user:default/jane.smith
+                updatedAt: "2023-07-26T10:11:12.345Z"
+                comment: "Looks good!"
+        '404':
+          description: Approval request not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    ApprovalInput:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: Title of the approval request
+          example: Approve my new service
+        entityRef:
+          type: string
+          description: Reference to a catalog entity (optional)
+          example: component:default/my-service
+          
+    ApprovalStatusUpdate:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [approved, rejected]
+          description: The new status for the approval request
+        comment:
+          type: string
+          description: Optional comment explaining the decision
+          
+    ApprovalItem:
+      type: object
+      required:
+        - id
+        - title
+        - status
+        - createdBy
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the approval
+        title:
+          type: string
+          description: Title of the approval request
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+          description: Current status of the approval
+        entityRef:
+          type: string
+          description: Reference to a catalog entity (if provided)
+        createdBy:
+          type: string
+          description: User entity reference of the creator
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updatedBy:
+          type: string
+          description: User entity reference of the updater
+        updatedAt:
+          type: string
+          format: date-time
+          description: Update timestamp
+        comment:
+          type: string
+          description: Comment provided with the status update
+          
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - message
+          properties:
+            message:
+              type: string
+              description: Error message
+            name:
+              type: string
+              description: Error name/type

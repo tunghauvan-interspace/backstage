@@ -4,7 +4,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node';
-import { createTodoListService } from './services/TodoListService';
+import { createApprovalService } from './services/ApprovalService';
 
 /**
  * approvalPlugin backend plugin
@@ -22,7 +22,7 @@ export const approvalPlugin = createBackendPlugin({
         catalog: catalogServiceRef,
       },
       async init({ logger, httpAuth, httpRouter, catalog }) {
-        const todoListService = await createTodoListService({
+        const approvalService = await createApprovalService({
           logger,
           catalog,
         });
@@ -30,7 +30,7 @@ export const approvalPlugin = createBackendPlugin({
         httpRouter.use(
           await createRouter({
             httpAuth,
-            todoListService,
+            approvalService,
           }),
         );
       },
