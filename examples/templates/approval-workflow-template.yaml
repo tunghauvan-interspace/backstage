@@ -28,9 +28,6 @@ spec:
             allowedKinds:
               - User
               - Group
-    
-    - title: Approval Configuration
-      properties:
         approver:
           title: Approver
           type: string
@@ -55,40 +52,42 @@ spec:
       input:
         message: Waiting for approval before proceeding with resource creation
 
-    # Replacing the approval step with a debug log step that simulates approval
     - id: request-approval
-      name: Request Approval Simulation
+      name: Request Approval
       action: scaffolder:approval
       input:
-        approver: ${{ parameters.approver }}
-        message: |
+        title: Approve Component Creation
+        description: |
           A new component named "${{ parameters.name }}" requires your approval.
-          Please review and approve the request.
-      # input:
-      #   message: |
-      #     APPROVAL SIMULATION:
-      #     A new component named "${{ parameters.name }}" would require approval from "${{ parameters.approver }}".
-      #     Since the approval action is not yet registered, we're automatically continuing.
-      #     To implement a real approval action, register a custom action in your backend.
-
-    # Replace wait:for with another debug:log as a simulation
-    - id: simulate-approval-wait  
-      name: Simulating Approval Wait
-      action: debug:log
-      input:
-        message: |
-          Simulating approval wait...
-          In a real implementation, this would pause until an approval is received.
-          Continuing after simulated approval...
+          Owner: ${{ parameters.owner }}
+          Please review and approve this request to continue the creation process.
+        approvers: 
+          - ${{ parameters.approver }}
 
     - id: post-approval-message
       name: Post-Approval Message
       action: debug:log
+      # This will only execute if the approval was granted
+      if: ${{ steps['request-approval'].output.approved }}
       input:
-        message: Approval received! Continuing with resource creation.
-        # This step only executes if the approval is granted
-  
+        message: |
+          Approval received! Continuing with resource creation.
+          Request ID: ${{ steps['request-approval'].output.requestId }}
+    
+    # Conditional step that only runs if approval was rejected
+    - id: approval-rejected
+      name: Approval Rejected
+      action: debug:log
+      if: ${{ !steps['request-approval'].output.approved }}
+      input:
+        message: |
+          The approval request was rejected or timed out.
+          Request ID: ${{ steps['request-approval'].output.requestId }}
+          The template execution will now stop.
+
   output:
     links:
       - title: Repository
         url: ${{ steps.publish.output.remoteUrl }}
+      - title: Approval Status
+        url: /approval/${{ steps['request-approval'].output.requestId }}
