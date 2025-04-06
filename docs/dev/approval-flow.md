@@ -18,13 +18,24 @@ When working in regulated environments or with critical infrastructure, you may 
 ### To-Do Tasks
 
 - [x] **Feature Specification**: Define the approval flow requirements and user stories
-- [ ] **Architecture Design**: Design the approval flow architecture and integration points
+- [x] **Architecture Design**: Design the approval flow architecture and integration points
 - [ ] **Notification System**: Implement notification delivery to approvers
 - [ ] **UI Components**: Create approval request and response interfaces
 - [ ] **Backend Logic**: Implement approval state management and workflow control
 - [ ] **Testing**: Write unit and integration tests for approval flows
 - [ ] **Documentation**: Complete this guide with all implementation details
 - [ ] **Examples**: Provide working examples for common approval scenarios
+
+### Architecture Documentation
+
+The detailed architecture design for the approval flow system can be found in [Approval Flow Architecture](../specs/approval-flow-architecture.md). This document includes:
+
+- System components and their interactions
+- Integration points with internal Backstage services
+- External system integration patterns
+- API specifications
+- State management approach
+- Security and scalability considerations
 
 ### Feature List
 
