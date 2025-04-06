@@ -1,6 +1,6 @@
 # Approval Flow for Software Templates
 
-> **Navigation**: [Home](../index.md) > Approval Flow
+> **Navigation**: [Home](../README.md) > Approval Flow
 
 Approval flows add governance to your software template scaffolding process, allowing designated approvers to review and authorize template executions before they complete. This document explains how to configure and implement approval flows in Backstage.
 
