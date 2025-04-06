@@ -29,7 +29,9 @@ backend:
   # The production database configuration is stored in app-config.production.yaml
   database:
     client: better-sqlite3
-    connection: ':memory:'
+    connection:
+      directory: "./db"
+    useNullAsDefault: true
   env:
     NODE_OPTIONS: --no-node-snapshot
 
