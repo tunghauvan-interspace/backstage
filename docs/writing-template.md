@@ -1,5 +1,7 @@
 # Writing Templates
 
+> **Navigation**: [Home](./index.md) > Writing Templates
+
 Templates are stored in the [Software Catalog](../software-catalog/descriptor-format.md) as
 [Kind](../software-catalog/descriptor-format.md#kind-required) `Template`. The
 minimum requirement for registering a template is a
@@ -200,10 +202,12 @@ Template contents typically live in a directory relative to the template definit
 
 Templates can be tested locally by registering them in your local catalog. You can also use the `dry-run` command to test the template without creating any resources.
 
-## Further Reading
+## See Also
 
-For more detailed information, please refer to:
+- [Input Field Examples](./input-example.md)
+- [Custom Actions](./custom-actions.md)
+- [Built-in Actions](./buildin-actions.md)
 
-- [Built-in actions reference](https://backstage.io/docs/features/software-templates/builtin-actions)
-- [Writing custom actions](https://backstage.io/docs/features/software-templates/writing-custom-actions)
-- [Template examples](https://github.com/backstage/community-plugins/tree/main/scaffolder-templates)
+---
+
+_Return to [Software Templates Home](./index.md)_

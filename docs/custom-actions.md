@@ -1,5 +1,7 @@
 # Writing Custom Actions
 
+> **Navigation**: [Home](./index.md) > Custom Actions
+
 The Scaffolder is powered by Tasks, which are in turn powered by Actions. When a Template is executed, a Task is created and each step in the Template is executed in sequence, with the actions being the implementation of these steps. This allows for customization of the Templates by writing custom actions. This guide demonstrates how to write custom actions and add them to the Backstage scaffolder.
 
 ## Creating a Custom Action
@@ -288,3 +290,13 @@ describe('myCustomAction', () => {
 ## Conclusion
 
 Custom actions are a powerful way to extend the Backstage scaffolder to fit your organization's specific needs. By following this guide, you should be able to create and register custom actions that can be used in your templates.
+
+## See Also
+
+- [Built-in Actions](./buildin-actions.md)
+- [Writing Templates](./writing-template.md)
+- [Custom Field Extensions](./custom-fields.md)
+
+---
+
+_Return to [Software Templates Home](./index.md)_

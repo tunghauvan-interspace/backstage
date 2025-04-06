@@ -1,5 +1,7 @@
 # Approval Flow for Software Templates
 
+> **Navigation**: [Home](../index.md) > Approval Flow
+
 Approval flows add governance to your software template scaffolding process, allowing designated approvers to review and authorize template executions before they complete. This document explains how to configure and implement approval flows in Backstage.
 
 ## Introduction
@@ -228,3 +230,13 @@ app:
 ## Conclusion
 
 Approval flows provide a critical governance layer for software template execution in regulated or sensitive environments. By properly configuring approvals, you can ensure that all new resources created through Backstage meet your organization's compliance and security requirements.
+
+## See Also
+
+- [Writing Templates](../writing-template.md)
+- [Custom Actions](../custom-actions.md)
+- [Built-in Actions](../buildin-actions.md)
+
+---
+
+_Return to [Software Templates Home](../index.md)_

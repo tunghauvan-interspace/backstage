@@ -1,6 +1,8 @@
-# Built-in Actions
+# Built-in Actions Reference
 
-The scaffolder comes with several built-in actions for templates.
+> **Navigation**: [Home](./index.md) > Built-in Actions
+
+The scaffolder comes with several built-in actions for templates. This reference guide provides details about each action and how to use them.
 
 ## catalog:register
 
@@ -353,3 +355,13 @@ spec:
 ## Looking for more actions?
 
 Backstage provides a plugin ecosystem where you can find or create more actions to extend your templates. Check the Backstage Plugins page or community contributions for additional actions.
+
+## See Also
+
+- [Writing Custom Actions](./custom-actions.md)
+- [Writing Templates](./writing-template.md)
+- [Approval Flows](./dev/approval-flow.md)
+
+---
+
+_Return to [Software Templates Home](./index.md)_

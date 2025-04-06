@@ -1,5 +1,7 @@
 # Writing Custom Field Extensions
 
+> **Navigation**: [Home](./index.md) > Custom Fields
+
 The Backstage Software Templates feature allows for customizing the form fields that are used when users fill in the template parameters. This is done through custom field extensions, which allow you to create specialized form fields for your templates.
 
 ## Creating a Custom Field Extension
@@ -270,3 +272,13 @@ const CustomFieldWithValidation: FieldExtensionComponent<{}, string> = ({
 ## Conclusion
 
 Custom field extensions provide a powerful way to enhance the template forms in Backstage. By following this guide, you can create specialized inputs tailored to your organization's needs.
+
+## See Also
+
+- [Input Field Examples](./input-example.md)
+- [Writing Templates](./writing-template.md)
+- [Custom Actions](./custom-actions.md)
+
+---
+
+_Return to [Software Templates Home](./index.md)_

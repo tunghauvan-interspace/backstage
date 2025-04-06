@@ -1,5 +1,7 @@
 # Input Examples for Software Templates
 
+> **Navigation**: [Home](./index.md) > Input Examples
+
 This page contains examples of different types of input fields that can be used in Backstage Software Templates.
 
 ## Basic Input Field Types
@@ -163,4 +165,12 @@ ui:options:
     - "{{ parameters.Organization }}"
 ```
 
-For more information, see the [full documentation](https://backstage.io/docs/features/software-templates/writing-templates).
+## See Also
+
+- [Writing Templates](./writing-template.md)
+- [Custom Field Extensions](./custom-fields.md)
+- [Template Examples](https://github.com/backstage/community-plugins/tree/main/scaffolder-templates)
+
+---
+
+_Return to [Software Templates Home](./index.md)_
