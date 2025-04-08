@@ -45,6 +45,9 @@ backend.add(import('@backstage/plugin-proxy-backend'));
 backend.add(import('@backstage/plugin-scaffolder-backend'));
 backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
 
+backend.add(import('@internal/plugin-approval-backend'));
+
+
 // Register the example module to demonstrate custom actions with context object
 // This provides access to:
 // - workspacePath: Work directory for template files
@@ -137,5 +140,4 @@ async function main() {
   // ...existing code...
 }
 
-backend.add(import('@internal/plugin-approval-backend'));
 backend.start();

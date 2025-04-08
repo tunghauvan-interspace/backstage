@@ -25,11 +25,14 @@
   },
   "dependencies": {
     "@backstage/backend-plugin-api": "^1.2.1",
-    "@backstage/plugin-scaffolder-node": "^0.8.0"
+    "@backstage/plugin-scaffolder-node": "^0.8.0",
+    "node-fetch": "^2.6.7"
   },
   "devDependencies": {
     "@backstage/cli": "^0.31.0",
-    "@backstage/plugin-scaffolder-node-test-utils": "^0.2.0"
+    "@backstage/plugin-scaffolder-node-test-utils": "^0.2.0",
+    "cross-fetch": "^4.0.0",
+    "msw": "^1.0.0"
   },
   "files": [
     "dist"
