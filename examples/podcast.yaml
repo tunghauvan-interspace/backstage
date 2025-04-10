@@ -1,0 +1,53 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: playback
+  description: Everything related to podcast playback
+spec:
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: podcast
+  description: Podcast playback
+spec:
+  owner: guests
+  domain: playback
+  type: feature-set
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: podcast-player
+  description: Podcast player component
+spec:
+  type: service
+  lifecycle: experimental
+  owner: guests
+  system: podcast
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: podcast-player-db-1
+  description: Database for the podcast player component
+spec:
+  type: database
+  lifecycle: experimental
+  owner: guests
+  system: podcast
+  dependencyOf: [component:podcast-player]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: podcast-player-db-2
+  description: Database for the podcast player component
+spec:
+  type: database
+  lifecycle: experimental
+  owner: guests
+  system: podcast
+  dependencyOf: [component:podcast-player]
