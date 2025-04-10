@@ -43,45 +43,46 @@ metadata:
   name: bff-publisher-rest-api
   annotations:
     backstage.io/owner: guests
-    backstage.io/api-docs: url:https://example.com/openapi.yaml
 spec:
   type: openapi
   lifecycle: experimental
   owner: guests
   system: examples
-  definition: |
-    openapi: 3.0.0
-    info:
-      title: Example REST API
-      version: '1.0.0'
-      description: A simple REST API example
-    paths:
-      /examples:
-        get:
-          summary: Get examples
-          responses:
-            '200':
-              description: Successful response
-              content:
-                application/json:
-                  schema:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Example'
-        post:
-          summary: Create example
-          requestBody:
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Example'
-          responses:
-            '201':
-              description: Example created
-    components:
-      schemas:
-        Example:
-          type: object
-          properties:
-            example:
-              type: string
+  definition:
+    $text: https://mobile-dev-gurkha-id.asean-accesstrade.net/publisher/v3/api-docs.yaml
+  # definition: |
+  #   openapi: 3.0.0
+  #   info:
+  #     title: Example REST API
+  #     version: '1.0.0'
+  #     description: A simple REST API example
+  #   paths:
+  #     /examples:
+  #       get:
+  #         summary: Get examples
+  #         responses:
+  #           '200':
+  #             description: Successful response
+  #             content:
+  #               application/json:
+  #                 schema:
+  #                   type: array
+  #                   items:
+  #                     $ref: '#/components/schemas/Example'
+  #       post:
+  #         summary: Create example
+  #         requestBody:
+  #           content:
+  #             application/json:
+  #               schema:
+  #                 $ref: '#/components/schemas/Example'
+  #         responses:
+  #           '201':
+  #             description: Example created
+  #   components:
+  #     schemas:
+  #       Example:
+  #         type: object
+  #         properties:
+  #           example:
+  #             type: string

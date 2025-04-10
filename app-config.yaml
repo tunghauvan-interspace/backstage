@@ -34,6 +34,9 @@ backend:
     useNullAsDefault: true
   env:
     NODE_OPTIONS: --no-node-snapshot
+  reading:
+    allow:
+      - host: '*.asean-accesstrade.net'
 
 integrations:
   github:
