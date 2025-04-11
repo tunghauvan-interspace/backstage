@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: github-example
+  title: GitHub Example Component
+  annotations:
+    github.com/project-slug: tunghauvan-interspace/backstage
+spec:
+  type: website
+  lifecycle: production
+  owner: user:guest

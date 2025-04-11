@@ -140,4 +140,5 @@ async function main() {
   // ...existing code...
 }
 
+backend.add(import('@internal/plugin-request-system-backend'));
 backend.start();
