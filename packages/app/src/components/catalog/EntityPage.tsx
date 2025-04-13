@@ -79,6 +79,7 @@ import {
 } from '@roadiehq/backstage-plugin-github-pull-requests';
 
 
+
 const techdocsContent = (
   <EntityTechdocsContent>
     <TechDocsAddons>
@@ -122,6 +123,14 @@ const overviewContent = (
     <Grid item md={6}>
       <EntityAboutCard variant="gridItem" />
     </Grid>
+
+    <EntitySwitch>
+      <EntitySwitch.Case if={e => Boolean(isArgocdAvailable(e))}>
+        <Grid item sm={6}>
+          <EntityArgoCDHistoryCard />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
     
     <EntitySwitch>
       <EntitySwitch.Case if={isJenkinsAvailable}>

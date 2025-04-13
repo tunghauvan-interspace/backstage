@@ -29,6 +29,7 @@ metadata:
     backstage.io/kubernetes-namespace: dev
     backstage.io/kubernetes-id: k8s-cluster
     backstage.io/kubernetes-cluster: k8s-cluster
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/name=dev-bffcommon-id
   links:
   - url: https://grafana.asean-accesstrade.net/
     title: My Dashboard
