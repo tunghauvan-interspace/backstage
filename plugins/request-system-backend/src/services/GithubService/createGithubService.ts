@@ -3,9 +3,10 @@ import { NotFoundError, InputError } from '@backstage/errors';
 import { catalogServiceRef, CatalogServiceRequestOptions } from '@backstage/plugin-catalog-node';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import crypto from 'node:crypto';
-import { GithubRepo, GithubService } from './types';
-import { Request } from 'express';
+import { GithubRepo, GithubService, PullRequest } from './types';
+import e, { Request } from 'express';
 import fetch from 'node-fetch';
+import { ConfigReader} from '@backstage/config';
 
 // Annotation for GitHub repository
 const GITHUB_REPO_ANNOTATION = 'github.com/project-slug';
@@ -21,12 +22,14 @@ export async function createGithubService({
   catalogApi,
   auth,
   httpAuth,
+  config,
 }: {
   logger: LoggerService;
   catalog: typeof catalogServiceRef.T;
   catalogApi: typeof catalogServiceRef.T;
   auth: AuthService;
   httpAuth: HttpAuthService;
+  config: ConfigReader;
 }): Promise<GithubService> {
   logger.info('Initializing GithubService');
 
@@ -153,6 +156,75 @@ export async function createGithubService({
       
       throw new NotFoundError(`No repo found with id '${request.id}'`);
     },
+
+    async listPullRequests(options: {
+      repoId?: string;
+      state?: string;
+      token: string;
+    }): Promise<PullRequest[]> {
+      try {
+        logger.info('Listing GitHub pull requests', { repoId: options.repoId, state: options.state });
+        
+        // Get entity from catalog if repoId is specified
+        let repoSlug: string | undefined;
+        
+        if (options.repoId) {
+          try {
+            const entity = await catalog.getEntityByRef(options.repoId, {});
+            if (entity) {
+              repoSlug = entity.metadata.annotations?.[GITHUB_REPO_ANNOTATION];
+            }
+          } catch (error) {
+            logger.debug(`Entity not found with id '${options.repoId}'`, { error });
+          }
+        }
+
+        const githubToken = config.getOptionalString('scaffolder.github.token');
+        
+        // If no specific repo is requested or entity was not found in catalog,
+        // fetch PRs from all repositories with the github.com/project-slug annotation
+        if (!repoSlug) {
+          // Fetch all entities with GitHub repo annotations
+          const response = await fetch('http://localhost:7007/api/catalog/entities?filter=metadata.annotations.github.com%2Fproject-slug', {
+            headers: {
+              Authorization: `Bearer ${options.token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch catalog entities: ${response.statusText}`);
+          }
+          
+          const entities = await response.json() as Entity[];
+          const allPRs: PullRequest[] = [];
+
+          logger.info('Received response from catalog API', { 
+            entitiesCount: entities.length,
+            firstEntityName: entities.length > 0 ? entities[0].metadata.name : 'none'
+          });
+
+          // 
+          
+          
+          // Get PRs for each repo
+          for (const entity of entities) {
+            const entityRepoSlug = entity.metadata.annotations?.[GITHUB_REPO_ANNOTATION];
+            if (entityRepoSlug) {
+              const prs = await fetchPullRequests(entityRepoSlug, options.state,githubToken);
+              allPRs.push(...prs);
+            }
+          }
+          
+          return allPRs;
+        }
+        
+        // If we have a specific repo slug, just fetch PRs for that repo
+        return await fetchPullRequests(repoSlug, options.state, githubToken);
+      } catch (error) {
+        logger.error('Error listing GitHub pull requests', { error });
+        throw new Error(`Failed to list GitHub pull requests: ${error}`);
+      }
+    },
   };
 }
 
@@ -175,4 +247,64 @@ function mapEntityToRepo(entity: Entity): GithubRepo {
   console.log('Mapped entity to repo:', { entity: entity.metadata.name, repo });
   
   return repo;
+}
+
+// Helper function to fetch pull requests from GitHub API
+async function fetchPullRequests(
+  repoSlug: string,
+  state?: string,
+  token?: string
+): Promise<PullRequest[]> {
+  // Use GitHub's REST API to fetch pull requests
+  // See: https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28
+  const [owner, repo] = repoSlug.split('/');
+  
+  if (!owner || !repo) {
+    throw new Error(`Invalid repository slug: ${repoSlug}`);
+  }
+  
+  let url = `https://api.github.com/repos/${owner}/${repo}/pulls`;
+
+  // print the URL for debugging
+  console.log('GitHub API URL:', url);
+  console.log('GitHub API Token:', token);
+  
+  // Add state filter if specified
+  if (state) {
+    // GitHub API accepts 'open', 'closed', or 'all'
+    const githubState = state === 'merged' ? 'closed' : state;
+    url += `?state=${githubState}`;
+  }
+  
+  const headers: Record<string, string> = {
+    'Accept': 'application/vnd.github.v3+json'
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  const response = await fetch(url, { headers });
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch pull requests: ${response.statusText}`);
+  }
+  
+  const data = await response.json();
+  
+  // Transform GitHub API response to our PullRequest type
+  return data.map((pr: any): PullRequest => ({
+    id: pr.id,
+    number: pr.number,
+    title: pr.title,
+    description: pr.body,
+    // Handle merged state separately
+    state: pr.merged_at ? 'merged' : pr.state,
+    url: pr.html_url,
+    createdAt: pr.created_at,
+    updatedAt: pr.updated_at,
+    authorName: pr.user?.login || 'unknown',
+    authorUrl: pr.user?.html_url,
+    repositoryName: repoSlug,
+  }));
 }

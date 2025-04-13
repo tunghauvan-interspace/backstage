@@ -20,11 +20,15 @@ metadata:
   annotations:
     backstage.io/owner: guests
     backstage.io/techdocs-ref: url:https://github.com/tunghauvan-interspace/backstage/tree/master/examples/example-docs
-    backstage.io/source-location: url:https://github.com/interspace-devops/bff-publisher
-    github.com/project-slug: interspace-devops/bff-publisher
+    backstage.io/source-location: url:https://github.com/interspace-obs/bff-publisher
+    github.com/project-slug: interspace-obs/bff-publisher
     # Add Jenkins annotation to the component as well if needed
     jenkins.io/job-full-name: "DEV_BFFPublisher"
     sonarqube.org/project-key: "interspace-devops-sonarqube/bff-publisher"
+    argocd/app-name: dev-bffpublisher-id
+    backstage.io/kubernetes-namespace: dev
+    backstage.io/kubernetes-id: k8s-cluster
+    backstage.io/kubernetes-cluster: k8s-cluster
   links:
   - url: https://grafana.asean-accesstrade.net/
     title: My Dashboard

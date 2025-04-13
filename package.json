@@ -59,5 +59,8 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@4.4.1"
+  "packageManager": "yarn@4.4.1",
+  "dependencies": {
+    "@roadiehq/backstage-plugin-argo-cd": "^2.8.7"
+  }
 }

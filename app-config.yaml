@@ -54,6 +54,14 @@ proxy:
     target: https://sonarqube.asean-accesstrade.net/api
     allowedMethods: ['GET']
     auth: "${SONARQUBE_TOKEN}:"
+  '/argocd/api':
+    target: https://argocd.example.com/api/v1/
+    changeOrigin: true
+    # If using local ArgoCD instance with self-signed certificate
+    secure: false
+    headers:
+      Cookie:
+        $env: ARGOCD_AUTH_TOKEN
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.
   # endpoints:

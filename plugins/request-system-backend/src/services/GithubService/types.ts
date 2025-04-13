@@ -13,6 +13,20 @@ export type GithubRepo = {
   repoSlug?: string;
 };
 
+export type PullRequest = {
+  id: number;
+  number: number;
+  title: string;
+  description?: string;
+  state: 'open' | 'closed' | 'merged';
+  url: string;
+  createdAt: string;
+  updatedAt: string;
+  authorName: string;
+  authorUrl?: string;
+  repositoryName: string;
+};
+
 export interface GithubService {
   createRepo(
     input: {
@@ -32,4 +46,10 @@ export interface GithubService {
   ): Promise<GithubRepo[]>;
 
   getRepo(request: { id: string }): Promise<GithubRepo>;
+  
+  listPullRequests(options: {
+    repoId?: string;
+    state?: string;
+    token: string;
+  }): Promise<PullRequest[]>;
 }

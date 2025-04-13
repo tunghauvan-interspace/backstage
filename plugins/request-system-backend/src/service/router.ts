@@ -15,14 +15,12 @@ export async function createRouter({
   catalog,
   auth,
   cache,
-  catalogApi,
 }: {
   github: GithubService;
   httpAuth: HttpAuthService;
   catalog: typeof catalogServiceRef.T;
   auth: AuthService;
   cache: CacheService;
-  catalogApi: CatalogApi;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
@@ -63,6 +61,22 @@ export async function createRouter({
     const { id } = request.params;
     const repo = await github.getRepo({ id });
     response.json(repo);
+  });
+
+  router.get('/pull-request', async (request, response) => {
+    const { repo_id, state } = request.query;
+    const { token } = await auth.getPluginRequestToken({
+      onBehalfOf: await httpAuth.credentials(request),
+      targetPluginId: 'catalog',
+    });
+    
+    const pullRequests = await github.listPullRequests({
+      repoId: repo_id as string,
+      state: state as string,
+      token
+    });
+    
+    response.json(pullRequests);
   });
 
   router.get('/example', async (_, response) => {

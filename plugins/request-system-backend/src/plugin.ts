@@ -25,15 +25,17 @@ export const requestSystemPlugin = createBackendPlugin({
         auth: coreServices.auth,
         logger: coreServices.logger,
         catalog: catalogServiceRef,
-        catalogApi: catalogServiceRef
+        catalogApi: catalogServiceRef,
+        config: coreServices.rootConfig,
       },
-      async init({ cache, httpAuth, http, logger, catalog, auth , catalogApi }) {
+      async init({ cache, httpAuth, http, logger, catalog, auth , catalogApi, config}) {
         const github = await createGithubService({
           logger,
           catalog,
           httpAuth,
           auth,
           catalogApi: catalogApi,
+          config,
         });
         http.use(
           await createRouter({

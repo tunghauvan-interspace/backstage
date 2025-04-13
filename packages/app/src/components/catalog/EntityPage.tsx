@@ -60,6 +60,11 @@ import {
 } from '@backstage/plugin-kubernetes';
 
 import {
+  EntityArgoCDHistoryCard,
+  isArgocdAvailable,
+} from '@roadiehq/backstage-plugin-argo-cd';
+
+import {
   isJenkinsAvailable,
   EntityJenkinsContent,
   EntityLatestJenkinsRunCard
@@ -133,6 +138,16 @@ const overviewContent = (
         </Grid>
       </EntitySwitch.Case>
     </EntitySwitch>
+
+    <EntitySwitch>
+      <EntitySwitch.Case if={e => Boolean(isArgocdAvailable(e))}>
+        <Grid item sm={6}>
+          <EntityArgoCDHistoryCard />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
+
+
 
     <Grid item md={6} xs={12}>
       <EntityLinksCard />
