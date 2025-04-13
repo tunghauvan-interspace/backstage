@@ -25,11 +25,11 @@ metadata:
     # Add Jenkins annotation to the component as well if needed
     jenkins.io/job-full-name: "DEV_BFFPublisher"
     sonarqube.org/project-key: "interspace-devops-sonarqube/bff-publisher"
-    argocd/app-name: dev-bffpublisher-id
+    argocd/app-selector: argo.argoproj.io/name=bffpublisher
     backstage.io/kubernetes-namespace: dev
     backstage.io/kubernetes-id: k8s-cluster
     backstage.io/kubernetes-cluster: k8s-cluster
-    backstage.io/kubernetes-label-selector: app.kubernetes.io/name=dev-bffcommon-id
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/app=bff-publisher
   links:
   - url: https://grafana.asean-accesstrade.net/
     title: My Dashboard

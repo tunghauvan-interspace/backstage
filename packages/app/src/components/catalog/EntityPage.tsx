@@ -60,14 +60,16 @@ import {
 } from '@backstage/plugin-kubernetes';
 
 import {
+  EntityArgoCDOverviewCard,
   EntityArgoCDHistoryCard,
+  EntityArgoCDContent,
   isArgocdAvailable,
 } from '@roadiehq/backstage-plugin-argo-cd';
 
 import {
   isJenkinsAvailable,
   EntityJenkinsContent,
-  EntityLatestJenkinsRunCard
+  EntityLatestJenkinsRunCard,
 } from '@backstage-community/plugin-jenkins';
 
 import { EntitySonarQubeCard } from '@backstage-community/plugin-sonarqube';
@@ -126,8 +128,8 @@ const overviewContent = (
 
     <EntitySwitch>
       <EntitySwitch.Case if={e => Boolean(isArgocdAvailable(e))}>
-        <Grid item sm={6}>
-          <EntityArgoCDHistoryCard />
+        <Grid item md={6} xs={12}>
+          <EntityArgoCDOverviewCard />
         </Grid>
       </EntitySwitch.Case>
     </EntitySwitch>
@@ -148,10 +150,18 @@ const overviewContent = (
       </EntitySwitch.Case>
     </EntitySwitch>
 
-    <EntitySwitch>
+    {/* <EntitySwitch>
       <EntitySwitch.Case if={e => Boolean(isArgocdAvailable(e))}>
         <Grid item sm={6}>
           <EntityArgoCDHistoryCard />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch> */}
+
+    <EntitySwitch>
+      <EntitySwitch.Case if={e => Boolean(isArgocdAvailable(e))}>
+        <Grid item sm={12} xs={12}>
+          <EntityArgoCDContent />
         </Grid>
       </EntitySwitch.Case>
     </EntitySwitch>
@@ -202,10 +212,10 @@ const serviceEntityPage = (
 
     <EntityLayout.Route path="/api" title="API">
       <Grid container spacing={3} alignItems="stretch">
-        <Grid item md={6}>
+        <Grid item sm={12}>
           <EntityProvidedApisCard />
         </Grid>
-        <Grid item md={6}>
+        <Grid item sm={12}>
           <EntityConsumedApisCard />
         </Grid>
       </Grid>
