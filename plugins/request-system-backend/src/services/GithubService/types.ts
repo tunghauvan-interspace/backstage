@@ -1,16 +1,17 @@
+import { Request } from 'express';
 import {
   BackstageCredentials,
   BackstageUserPrincipal,
 } from '@backstage/backend-plugin-api';
 
-export interface GithubRepo {
-  title: string;
+export type GithubRepo = {
   id: string;
+  title: string;
   createdBy: string;
   createdAt: string;
   repoUrl?: string;
   repoSlug?: string;
-}
+};
 
 export interface GithubService {
   createRepo(
@@ -23,7 +24,12 @@ export interface GithubService {
     },
   ): Promise<GithubRepo>;
 
-  listRepos(): Promise<{ items: GithubRepo[] }>;
+  listRepos(
+    request: Request,
+    options: {
+      token: string;
+    },
+  ): Promise<GithubRepo[]>;
 
   getRepo(request: { id: string }): Promise<GithubRepo>;
 }

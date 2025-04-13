@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Start Backend",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "yarn",
+            "args": [
+               "start-backend",
+               "--inspect"
+            ],
+            "skipFiles": [
+               "<node_internals>/**"
+            ],
+            "console": "integratedTerminal"
+         }
+    ]
+}

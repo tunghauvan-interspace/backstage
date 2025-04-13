@@ -34,6 +34,7 @@
     "@backstage/plugin-catalog-node": "^1.16.1",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
+    "node-fetch": "^3.3.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {

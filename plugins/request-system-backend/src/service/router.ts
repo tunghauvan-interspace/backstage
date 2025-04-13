@@ -1,25 +1,28 @@
-import {
-  CacheService,
-  HttpAuthService,
-  errorHandler,
-} from '@backstage/backend-common';
+import { AuthService, HttpAuthService, CacheService } from '@backstage/backend-plugin-api';
 import { BackstageIdentityResponse } from '@backstage/plugin-auth-node';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 import express from 'express';
 import Router from 'express-promise-router';
 import { z } from 'zod';
 import { GithubService } from '../services/GithubService/types';
+import { InputError, NotFoundError } from '@backstage/errors';
+import { CatalogApi } from '@backstage/catalog-client';
+
 
 export async function createRouter({
   github,
   httpAuth,
   catalog,
+  auth,
   cache,
+  catalogApi,
 }: {
   github: GithubService;
   httpAuth: HttpAuthService;
   catalog: typeof catalogServiceRef.T;
+  auth: AuthService;
   cache: CacheService;
+  catalogApi: CatalogApi;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
@@ -44,8 +47,15 @@ export async function createRouter({
     response.status(201).json(repo);
   });
 
-  router.get('/repos', async (_, response) => {
-    const repos = await github.listRepos();
+  router.get('/repos', async (request, response) => {
+    const { token } = await auth.getPluginRequestToken({
+      onBehalfOf: await httpAuth.credentials(request),
+      targetPluginId: 'catalog',
+    });
+    const repos = await github.listRepos(
+      request,{
+      token,
+    });
     response.json(repos);
   });
 
@@ -87,14 +97,43 @@ export async function createRouter({
     // TEMPLATE NOTE:
     // This is an example of how to access the identity of the user making the
     // request. If not authenticated, this will throw.
-    const credentials = await httpAuth.credentials(request);
-    const identity: BackstageIdentityResponse = {
-      ...credentials.principal,
-      identity: credentials.principal,
-    };
-    response.json(identity);
+    const { token } = await auth.getPluginRequestToken({
+      onBehalfOf: await httpAuth.credentials(request),
+      targetPluginId: 'catalog',
+    });
+    response.json(
+      {
+        message: 'You are authenticated!',
+        token,
+      },
+    );
   });
 
   router.use(errorHandler());
   return router;
+}
+
+// Error handler middleware
+function errorHandler(): express.ErrorRequestHandler {
+  return (error, _req, res, next) => {
+    if (res.headersSent) {
+      next(error);
+      return;
+    }
+
+    const status = getStatusCode(error);
+    const message = error.message ?? 'Unknown error occurred';
+
+    res.status(status).json({ error: { message } });
+  };
+}
+
+// Helper to determine appropriate HTTP status code for errors
+function getStatusCode(error: Error): number {
+  if (error instanceof InputError) {
+    return 400;
+  } else if (error instanceof NotFoundError) {
+    return 404;
+  }
+  return 500;
 }

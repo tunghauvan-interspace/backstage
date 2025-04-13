@@ -1,9 +1,11 @@
-import { LoggerService } from '@backstage/backend-plugin-api';
-import { NotFoundError } from '@backstage/errors';
+import { LoggerService, AuthService, HttpAuthService } from '@backstage/backend-plugin-api';
+import { NotFoundError, InputError } from '@backstage/errors';
 import { catalogServiceRef, CatalogServiceRequestOptions } from '@backstage/plugin-catalog-node';
-import { Entity } from '@backstage/catalog-model';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import crypto from 'node:crypto';
 import { GithubRepo, GithubService } from './types';
+import { Request } from 'express';
+import fetch from 'node-fetch';
 
 // Annotation for GitHub repository
 const GITHUB_REPO_ANNOTATION = 'github.com/project-slug';
@@ -16,13 +18,20 @@ const GITHUB_REPO_ANNOTATION = 'github.com/project-slug';
 export async function createGithubService({
   logger,
   catalog,
+  catalogApi,
+  auth,
+  httpAuth,
 }: {
   logger: LoggerService;
   catalog: typeof catalogServiceRef.T;
+  catalogApi: typeof catalogServiceRef.T;
+  auth: AuthService;
+  httpAuth: HttpAuthService;
 }): Promise<GithubService> {
   logger.info('Initializing GithubService');
 
-  const storedRepos = new Array<GithubRepo>();
+  // Initialize with some sample data for testing
+  const storedRepos: GithubRepo[] = [];
 
   return {
     async createRepo(input, options) {
@@ -81,32 +90,43 @@ export async function createGithubService({
       return newRepo;
     },
 
-    async listRepos() {
+    async listRepos(request: Request, options: { token: string }): Promise<GithubRepo[]> {
       try {
         logger.info('Listing Github repositories');
-        // Get all components from the catalog without requiring credentials
-        // This fixes the "Cannot read properties of undefined (reading 'credentials')" error
-        const catalogEntities = await catalog.getEntities({
-          filter: {
-            kind: 'Component',
+
+        // Make direct call to catalog API endpoint
+        const response = await fetch('http://localhost:7007/api/catalog/entities?filter=metadata.annotations.github.com%2Fproject-slug', {
+          headers: {
+            Authorization: `Bearer ${options.token}`,
           },
-        },
-        {} as CatalogServiceRequestOptions);
+        });
 
-        // Filter to only include entities with GitHub annotations
-        const entitiesWithGithub = catalogEntities.items.filter(
-          entity => entity.metadata.annotations?.[GITHUB_REPO_ANNOTATION]
-        );
+        if (!response.ok) {
+          throw new Error(`Failed to fetch catalog entities: ${response.statusText}`);
+        }
 
-        logger.info(`Found ${entitiesWithGithub.length} entities with GitHub repositories`);
+        // The response is a direct array of entities
+        const entities = await response.json() as Entity[];
+        logger.info('Received response from catalog API', { 
+          entitiesCount: entities.length,
+          firstEntityName: entities.length > 0 ? entities[0].metadata.name : 'none'
+        });
         
-        // Map catalog entities to GithubRepo format
-        const repos = entitiesWithGithub.map(entity => mapEntityToRepo(entity));
+        // Transform catalog entities to GithubRepo format
+        const catalogRepos = Array.isArray(entities) ? entities.map(entity => mapEntityToRepo(entity)) : [];
+        logger.info('Transformed catalog entities to repos', { 
+          catalogReposCount: catalogRepos.length 
+        });
         
         // Combine with any in-memory stored repos
-        const allRepos = [...storedRepos, ...repos];
+        const allRepos = [...storedRepos, ...catalogRepos];
+        logger.info('Combined repos', { 
+          storedReposCount: storedRepos.length,
+          catalogReposCount: catalogRepos.length,
+          totalReposCount: allRepos.length
+        });
         
-        return { items: allRepos };
+        return allRepos;
       } catch (error) {
         logger.error('Error listing Github repositories', { error });
         throw new Error(`Failed to list Github repositories: ${error}`);
@@ -141,7 +161,7 @@ function mapEntityToRepo(entity: Entity): GithubRepo {
   // Extract GitHub repository information from annotations
   const repoSlug = entity.metadata.annotations?.[GITHUB_REPO_ANNOTATION] || '';
   
-  return {
+  const repo = {
     title: entity.metadata.title || entity.metadata.name,
     id: entity.metadata.name,
     createdBy: entity.spec?.owner || 'unknown',
@@ -150,4 +170,9 @@ function mapEntityToRepo(entity: Entity): GithubRepo {
     repoUrl: repoSlug ? `https://github.com/${repoSlug}` : undefined,
     repoSlug,
   };
+  
+  // For debugging
+  console.log('Mapped entity to repo:', { entity: entity.metadata.name, repo });
+  
+  return repo;
 }
