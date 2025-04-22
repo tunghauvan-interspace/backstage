@@ -123,41 +123,41 @@ catalog:
     - allow: [Component, System, API, Resource, Location, User, Group, Domain]
   locations:
     # Local example data, file locations are relative to the backend process, typically `packages/backend`
-    - type: file
-      target: ../../examples/entities.yaml
+    - type: url
+      target: https://github.com/tunghauvan-interspace/backstage/blob/master/examples/entities.yaml
 
     # Local example template
-    - type: file
-      target: ../../examples/template/template.yaml
+    - type: url
+      target: https://github.com/tunghauvan-interspace/backstage/blob/master/examples/template/template.yaml
       rules:
         - allow: [Template]
-    - type: file
-      target: ../../examples/templates/approval-workflow-template.yaml
+    - type: url
+      target: https://github.com/tunghauvan-interspace/backstage/blob/master/examples/templates/approval-workflow-template.yaml
       rules:
         - allow: [Template]
 
     # Local example organizational data
-    - type: file
-      target: ../../examples/org.yaml
+    - type: url
+      target: https://github.com/tunghauvan-interspace/backstage/blob/master/examples/org.yaml
       rules:
         - allow: [User, Group]
 
     # Add the users file with GitHub identities
-    - type: file
-      target: ../../examples/users.yaml
+    - type: url
+      target: https://github.com/tunghauvan-interspace/backstage/blob/master/examples/users.yaml
       rules:
         - allow: [User]
 
     # Add the technical documentation file
-    - type: file
-      target: ../../examples/example-docs/catalog-info.yaml
+    - type: url
+      target: https://github.com/tunghauvan-interspace/backstage/blob/master/examples/example-docs/catalog-info.yaml
       rules:
         - allow: [Component, System, API, Resource]
         - allow: [Documentation]
 
     # Uncomment these lines to add more example data
     # - type: url
-    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml
+    #   target: https://github.com/tunghauvan-interspace/backstage/blob/master/packages/catalog-model/examples/all.yaml
 
     ## Uncomment these lines to add an example org
     # - type: url
