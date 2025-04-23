@@ -64,7 +64,7 @@ spec:
       input:
         repoUrl: ${{ parameters.repoUrl }}
         branchName: create-${{ parameters.name | lower }}
-        targetBranchName: master
+        targetBranchName: main
         title: "Create new component: ${{ parameters.name }}"
         description: "This PR creates a new ${{ parameters.name }} component"
         targetPath: ${{ parameters.targetPath }}
