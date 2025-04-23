@@ -34,8 +34,10 @@ spec:
               - github.com
             allowedOwners:
               - interspace-devops
+              - tunghauvan-interspace
             allowedRepos:
               - backstage-gitok8s
+              - software-catalog
         targetPath:
           title: Target Path
           type: string
