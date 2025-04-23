@@ -128,9 +128,11 @@ catalog:
 
     # Local example template
     - type: url
-      target: https://github.com/tunghauvan-interspace/backstage/blob/master/examples/template/template.yaml
+      # target: https://github.com/tunghauvan-interspace/backstage/blob/master/examples/template/template.yaml
+      target: https://github.com/tunghauvan-interspace/software-template/blob/main/node-js/template.yaml
       rules:
         - allow: [Template]
+    
     - type: url
       target: https://github.com/tunghauvan-interspace/backstage/blob/master/examples/templates/approval-workflow-template.yaml
       rules:
