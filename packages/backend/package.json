@@ -49,6 +49,7 @@
     "@internal/plugin-request-system-backend": "workspace:^",
     "@internal/plugin-scaffolder-backend-module-approval": "workspace:^",
     "@internal/plugin-scaffolder-backend-module-example": "workspace:^",
+    "@roadiehq/scaffolder-backend-module-http-request": "^5.3.1",
     "app": "link:../app",
     "better-sqlite3": "^11.9.1",
     "dotenv": "^16.4.5",

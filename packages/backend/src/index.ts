@@ -140,5 +140,8 @@ async function main() {
   // ...existing code...
 }
 
+backend.add(import('@roadiehq/scaffolder-backend-module-http-request'));
+
+
 backend.add(import('@internal/plugin-request-system-backend'));
 backend.start();
